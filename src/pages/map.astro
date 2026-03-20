@@ -1,0 +1,304 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { mapMarkersZh } from "../data/swedenMap";
+
+const markers = JSON.stringify(mapMarkersZh);
+---
+
+<Layout title="瑞典地圖 | Sweden.md" description="用空間、區域與主題篩選探索 Sweden.md 的地理入口。" lang="zh-TW">
+  <section class="card">
+    <div class="card-inner hero">
+      <div>
+        <p class="eyebrow">Map view</p>
+        <h1>先看空間分布，再決定往哪個題目深入。</h1>
+        <p class="lede">仿照 `taiwan.md` 的地圖入口，這一頁把地景、城市與主題文章放回瑞典的空間尺度來閱讀。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="map-layout">
+    <section class="card">
+      <div class="card-inner">
+        <div class="filters">
+          <div>
+            <p class="eyebrow">區域篩選</p>
+            <div class="filter-row" id="region-filters">
+              <button class="active" data-filter="all">全部</button>
+              <button data-filter="north">首都圈</button>
+              <button data-filter="central">中部</button>
+              <button data-filter="south">南部</button>
+              <button data-filter="far-north">北極圈</button>
+              <button data-filter="coast">群島海岸</button>
+            </div>
+          </div>
+          <div>
+            <p class="eyebrow">主題篩選</p>
+            <div class="filter-row" id="category-filters">
+              <button class="active" data-filter="all">全部</button>
+              <button data-filter="history">歷史</button>
+              <button data-filter="culture">文化</button>
+              <button data-filter="nature">自然</button>
+              <button data-filter="society">社會</button>
+              <button data-filter="technology">科技</button>
+              <button data-filter="economy">經濟</button>
+              <button data-filter="art">設計</button>
+              <button data-filter="geography">地理</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="map-frame">
+          <svg id="sweden-map" viewBox="0 0 620 900" aria-label="Sweden map">
+            <defs>
+              <linearGradient id="swedenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#dbe8d8" />
+                <stop offset="100%" stop-color="#b7ceb2" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M390 44
+                 C440 46, 456 82, 450 122
+                 C446 156, 444 184, 452 226
+                 C462 282, 454 336, 438 388
+                 C426 426, 420 466, 418 516
+                 C416 574, 410 626, 392 676
+                 C374 728, 348 786, 312 832
+                 C286 864, 250 882, 220 872
+                 C196 864, 182 842, 182 816
+                 C182 772, 194 736, 212 698
+                 C228 662, 236 630, 236 590
+                 C236 548, 228 512, 220 474
+                 C210 424, 208 376, 216 332
+                 C226 276, 246 228, 278 182
+                 C314 132, 334 96, 346 70
+                 C354 52, 366 42, 390 44 Z"
+              fill="url(#swedenGradient)"
+              stroke="#365640"
+              stroke-width="3"
+            />
+          </svg>
+          <div id="map-tooltip" class="tooltip"></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div class="card-inner panel" id="map-panel">
+        <p class="eyebrow">Map detail</p>
+        <h2>點一個節點</h2>
+        <p class="panel-copy">右側面板會顯示該地點對應的文章與閱讀方向。</p>
+      </div>
+    </aside>
+  </section>
+</Layout>
+
+<script define:vars={{ markers }}>
+  const data = JSON.parse(markers);
+  const svg = document.getElementById("sweden-map");
+  const tooltip = document.getElementById("map-tooltip");
+  const panel = document.getElementById("map-panel");
+  const regionFilters = document.getElementById("region-filters");
+  const categoryFilters = document.getElementById("category-filters");
+
+  let activeRegion = "all";
+  let activeCategory = "all";
+
+  const categoryLabel = {
+    history: "歷史",
+    culture: "文化",
+    nature: "自然",
+    society: "社會",
+    technology: "科技",
+    economy: "經濟",
+    art: "設計",
+    geography: "地理"
+  };
+
+  data.forEach((item) => {
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    group.dataset.region = item.region;
+    group.dataset.category = item.category;
+
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", item.x);
+    circle.setAttribute("cy", item.y);
+    circle.setAttribute("r", "12");
+    circle.setAttribute("fill", "#c1631d");
+    circle.setAttribute("stroke", "#fffdf8");
+    circle.setAttribute("stroke-width", "3");
+    group.appendChild(circle);
+
+    const pulse = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    pulse.setAttribute("cx", item.x);
+    pulse.setAttribute("cy", item.y);
+    pulse.setAttribute("r", "20");
+    pulse.setAttribute("fill", "rgba(193,99,29,0.18)");
+    group.appendChild(pulse);
+
+    group.addEventListener("mouseenter", (event) => {
+      tooltip.style.display = "block";
+      tooltip.innerHTML = `<strong>${item.title}</strong><span>${categoryLabel[item.category]}</span><p>${item.description}</p>`;
+      tooltip.style.left = `${event.clientX + 14}px`;
+      tooltip.style.top = `${event.clientY - 10}px`;
+    });
+    group.addEventListener("mousemove", (event) => {
+      tooltip.style.left = `${event.clientX + 14}px`;
+      tooltip.style.top = `${event.clientY - 10}px`;
+    });
+    group.addEventListener("mouseleave", () => (tooltip.style.display = "none"));
+    group.addEventListener("click", () => {
+      panel.innerHTML = `
+        <p class="eyebrow">Map detail</p>
+        <h2>${item.title}</h2>
+        <p class="panel-tag">${categoryLabel[item.category]} / ${item.region}</p>
+        <p class="panel-copy">${item.description}</p>
+        <a class="panel-link" href="${item.href}">閱讀文章 →</a>
+      `;
+    });
+
+    svg.appendChild(group);
+  });
+
+  function applyFilters() {
+    [...svg.querySelectorAll("g")].forEach((group) => {
+      const regionMatch = activeRegion === "all" || group.dataset.region === activeRegion;
+      const categoryMatch = activeCategory === "all" || group.dataset.category === activeCategory;
+      group.style.opacity = regionMatch && categoryMatch ? "1" : "0.16";
+      group.style.pointerEvents = regionMatch && categoryMatch ? "auto" : "none";
+    });
+  }
+
+  function bindFilter(container, key) {
+    container.addEventListener("click", (event) => {
+      if (!(event.target instanceof HTMLButtonElement)) return;
+      [...container.querySelectorAll("button")].forEach((button) => button.classList.remove("active"));
+      event.target.classList.add("active");
+      if (key === "region") activeRegion = event.target.dataset.filter;
+      if (key === "category") activeCategory = event.target.dataset.filter;
+      applyFilters();
+    });
+  }
+
+  bindFilter(regionFilters, "region");
+  bindFilter(categoryFilters, "category");
+</script>
+
+<style>
+  .hero h1 {
+    font-size: clamp(2.6rem, 5vw, 4.8rem);
+    margin-bottom: 12px;
+  }
+
+  .lede,
+  .panel-copy,
+  .panel-tag {
+    color: var(--muted);
+  }
+
+  .map-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) 320px;
+    gap: 20px;
+  }
+
+  .filters {
+    display: grid;
+    gap: 18px;
+    margin-bottom: 20px;
+  }
+
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .filter-row button,
+  .panel-link {
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface-strong);
+    color: var(--ink);
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .filter-row button.active {
+    background: var(--forest);
+    border-color: var(--forest);
+    color: #fffaf4;
+  }
+
+  .map-frame {
+    position: relative;
+    min-height: 720px;
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at top, rgba(193, 99, 29, 0.12), transparent 30%),
+      linear-gradient(180deg, rgba(255,255,255,0.7), rgba(244,239,228,0.86));
+  }
+
+  #sweden-map {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  #sweden-map g {
+    cursor: pointer;
+    transition: opacity 180ms ease;
+  }
+
+  .panel {
+    position: sticky;
+    top: 96px;
+  }
+
+  .panel-link {
+    display: inline-flex;
+    margin-top: 12px;
+  }
+
+  .tooltip {
+    position: fixed;
+    display: none;
+    max-width: 260px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(31, 43, 34, 0.94);
+    color: #fffaf4;
+    pointer-events: none;
+    z-index: 40;
+  }
+
+  .tooltip strong,
+  .tooltip span,
+  .tooltip p {
+    display: block;
+  }
+
+  .tooltip span {
+    color: rgba(255, 250, 244, 0.72);
+    font-size: 0.82rem;
+    margin-top: 4px;
+  }
+
+  .tooltip p {
+    margin: 8px 0 0;
+    font-size: 0.88rem;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 980px) {
+    .map-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .panel {
+      position: static;
+    }
+  }
+</style>

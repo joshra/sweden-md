@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Sweden.md">
+  <rect width="64" height="64" rx="16" fill="#f3e8d5" />
+  <path d="M18 20h28v24H18z" fill="#2e5741" opacity=".14" />
+  <path d="M18 20h10c8 0 12 3.7 12 9.5S35.7 39 28 39h-3v7h-7zm7 6v7h3c3.3 0 5-1.2 5-3.5S31.4 26 28 26z" fill="#1f2b22" />
+  <circle cx="48" cy="18" r="6" fill="#c1631d" />
+</svg>

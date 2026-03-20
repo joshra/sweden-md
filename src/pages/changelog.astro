@@ -1,0 +1,73 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getAllArticles } from "../utils/content";
+
+const changes = getAllArticles("zh-TW")
+  .filter((article) => !article.isHub)
+  .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+  .slice(0, 12);
+---
+
+<Layout title="Changelog | Sweden.md" description="Sweden.md 最近更新的文章與前端進展。" lang="zh-TW">
+  <section class="card">
+    <div class="card-inner hero">
+      <div>
+        <p class="eyebrow">Changelog</p>
+        <h1>讓更新有前端入口，而不是只存在 commit 裡。</h1>
+        <p class="lede">`taiwan.md` 有獨立的更新頁。Sweden.md 也應該讓讀者知道最近新增了什麼、哪條知識線正在擴張。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="timeline">
+    {changes.map((article) => (
+      <article class="card">
+        <div class="card-inner item">
+          <p class="date">{article.updatedAt.toISOString().slice(0, 10)}</p>
+          <div>
+            <h2><a href={article.href}>{article.title}</a></h2>
+            <p>{article.description || article.excerpt}</p>
+          </div>
+        </div>
+      </article>
+    ))}
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    display: grid;
+    gap: 18px;
+  }
+  h1 {
+    font-size: clamp(2.6rem, 5vw, 4.6rem);
+    margin-bottom: 12px;
+  }
+  .lede,
+  .date,
+  .item p {
+    color: var(--muted);
+  }
+  .timeline {
+    display: grid;
+    gap: 16px;
+  }
+  .item {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+  .item h2,
+  .item p {
+    margin: 0;
+  }
+  .item h2 {
+    margin-bottom: 8px;
+  }
+  @media (max-width: 900px) {
+    .item {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

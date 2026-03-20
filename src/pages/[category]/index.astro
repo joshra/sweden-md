@@ -1,0 +1,199 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getArticlesByCategory, getDynamicCategories } from "../../utils/content";
+import { getCategoryConfig } from "../../utils/categoryConfig";
+
+export async function getStaticPaths() {
+  return getDynamicCategories("zh-TW").map((category) => ({
+    params: { category: category.slug }
+  }));
+}
+
+const { category } = Astro.params;
+const articles = getArticlesByCategory("zh-TW", category!);
+const hub = articles.find((article) => article.isHub);
+const regularArticles = articles.filter((article) => !article.isHub);
+const config = getCategoryConfig(category!);
+---
+
+<Layout title={`${config?.label || category} | Sweden.md`} description={hub?.description || config?.description || ""} lang="zh-TW">
+  <section class="card hero">
+    <div class="card-inner hero-inner">
+      <div>
+        <p class="eyebrow">分類策展 / Category essay</p>
+        <h1>{config?.emoji} {config?.label || category}</h1>
+        <p class="lede">{hub?.description || config?.description}</p>
+      </div>
+      <div class="hero-meta">
+        <strong>{regularArticles.length}</strong>
+        <span>篇文章</span>
+      </div>
+    </div>
+  </section>
+
+  {hub && (
+    <section class="card">
+      <div class="card-inner prose">
+        {hub.summary && <blockquote>{hub.summary}</blockquote>}
+        <div set:html={hub.html} />
+      </div>
+    </section>
+  )}
+
+  <section class="card">
+    <div class="card-inner">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Articles</p>
+          <h2>從這些文章往下讀。</h2>
+        </div>
+        <p class="section-note">每篇文章都延續這個分類的 framing，而不是孤立詞條。</p>
+      </div>
+
+      <div class="article-grid">
+        {regularArticles.map((article) => (
+          <a class="article-card" href={article.href}>
+            <p class="meta">{config?.label}</p>
+            <h3>{article.title}</h3>
+            <p class="excerpt">{article.description || article.excerpt}</p>
+            <div class="card-foot">
+              <span>{article.readingMinutes} 分鐘</span>
+              <span>閱讀文章</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero-inner,
+  .section-head {
+    display: grid;
+    gap: 20px;
+  }
+
+  .hero-inner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+  }
+
+  h1 {
+    font-size: clamp(2.8rem, 5vw, 4.8rem);
+    margin-bottom: 12px;
+  }
+
+  .lede,
+  .section-note,
+  .excerpt {
+    color: var(--muted);
+  }
+
+  .hero-meta {
+    min-width: 132px;
+    padding: 18px 22px;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: var(--surface-strong);
+    text-align: center;
+  }
+
+  .hero-meta strong {
+    display: block;
+    font-family: var(--serif);
+    font-size: 2.2rem;
+  }
+
+  .prose {
+    max-width: 76ch;
+  }
+
+  .prose :global(blockquote) {
+    margin: 0 0 20px;
+    padding: 18px 20px;
+    border-left: 4px solid var(--accent);
+    background: var(--surface-strong);
+    border-radius: 0 18px 18px 0;
+    color: var(--muted);
+  }
+
+  .prose :global(h2) {
+    margin-top: 28px;
+    margin-bottom: 10px;
+    font-size: 1.85rem;
+  }
+
+  .prose :global(p),
+  .prose :global(li) {
+    line-height: 1.85;
+  }
+
+  .section-head {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    margin-bottom: 20px;
+  }
+
+  .section-head h2 {
+    font-size: clamp(1.9rem, 3vw, 2.8rem);
+  }
+
+  .article-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .article-card {
+    display: grid;
+    gap: 10px;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: var(--surface-strong);
+    text-decoration: none;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .article-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(193, 99, 29, 0.32);
+  }
+
+  .meta {
+    margin: 0;
+    color: var(--forest);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .article-card h3 {
+    font-size: 1.45rem;
+  }
+
+  .article-card p {
+    margin: 0;
+  }
+
+  .card-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 8px;
+    color: var(--forest);
+    font-weight: 600;
+  }
+
+  @media (max-width: 980px) {
+    .hero-inner,
+    .section-head,
+    .article-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

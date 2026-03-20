@@ -1,0 +1,253 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { resourceClustersEn } from "../../data/swedenResources";
+
+const graphData = JSON.stringify(
+  resourceClustersEn.flatMap((cluster, clusterIndex) => {
+    const angle = (Math.PI * 2 * clusterIndex) / resourceClustersEn.length - Math.PI / 2;
+    const categoryX = Math.cos(angle) * 180;
+    const categoryY = Math.sin(angle) * 180;
+
+    return [
+      { id: cluster.id, label: cluster.label, x: categoryX, y: categoryY, color: cluster.color, type: "cluster" },
+      ...cluster.sites.map((site, siteIndex) => {
+        const siteAngle = angle + (siteIndex - (cluster.sites.length - 1) / 2) * 0.18;
+        return {
+          id: `${cluster.id}-${siteIndex}`,
+          label: site.name,
+          x: Math.cos(siteAngle) * 320,
+          y: Math.sin(siteAngle) * 320,
+          color: cluster.color,
+          type: "site",
+          url: site.url
+        };
+      })
+    ];
+  })
+);
+---
+
+<Layout title="Sweden.md Resources" description="Searchable Swedish public resources presented as a visual research surface." lang="en">
+  <section class="card">
+    <div class="card-inner hero">
+      <div>
+        <p class="eyebrow">Reference layer</p>
+        <h1>Turn source links into an explorable research interface.</h1>
+        <p class="lede">
+          Inspired by `taiwan.md`, this page turns government, statistics, education, culture, and nature sources into a searchable network and card directory.
+        </p>
+      </div>
+      <div class="search-box">
+        <input id="resource-search" type="text" placeholder="Search sites or clusters..." />
+        <p id="resource-count">Showing all resources</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-inner">
+      <div class="map-wrap">
+        <svg id="resource-map" viewBox="-430 -430 860 860" aria-label="Sweden resource mindmap">
+          <circle cx="0" cy="0" r="74" fill="#1f2b22" />
+          <text x="0" y="-6" text-anchor="middle" fill="#fffaf4" font-size="26" font-family="Fraunces, serif">Sweden</text>
+          <text x="0" y="24" text-anchor="middle" fill="#fffaf4" font-size="16" font-family="IBM Plex Sans, sans-serif">Resources</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  {resourceClustersEn.map((cluster) => (
+    <section class="card cluster-section" data-cluster={cluster.id}>
+      <div class="card-inner">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">{cluster.label}</p>
+            <h2>{cluster.sites.length} core entry points</h2>
+          </div>
+        </div>
+        <div class="site-grid">
+          {cluster.sites.map((site) => (
+            <a class="site-card" data-name={`${site.name} ${site.domain} ${cluster.label}`} href={site.url} target="_blank" rel="noreferrer">
+              <span class="site-dot" style={`background:${cluster.color}`}></span>
+              <div>
+                <h3>{site.name}</h3>
+                <p>{site.domain}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  ))}
+</Layout>
+
+<script define:vars={{ graphData }}>
+  const items = JSON.parse(graphData);
+  const svg = document.getElementById("resource-map");
+  const search = document.getElementById("resource-search");
+  const count = document.getElementById("resource-count");
+  const cards = [...document.querySelectorAll(".site-card")];
+  const sections = [...document.querySelectorAll(".cluster-section")];
+
+  items.forEach((item) => {
+    if (item.type === "cluster") {
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", "0");
+      line.setAttribute("y1", "0");
+      line.setAttribute("x2", item.x);
+      line.setAttribute("y2", item.y);
+      line.setAttribute("stroke", item.color);
+      line.setAttribute("stroke-opacity", "0.35");
+      line.setAttribute("stroke-width", "3");
+      svg.appendChild(line);
+    }
+  });
+
+  items.forEach((item) => {
+    if (item.type === "site") {
+      const clusterId = item.id.split("-")[0];
+      const cluster = items.find((entry) => entry.id === clusterId);
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", cluster.x);
+      line.setAttribute("y1", cluster.y);
+      line.setAttribute("x2", item.x);
+      line.setAttribute("y2", item.y);
+      line.setAttribute("stroke", item.color);
+      line.setAttribute("stroke-opacity", "0.2");
+      svg.appendChild(line);
+    }
+  });
+
+  items.forEach((item) => {
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.dataset.label = item.label.toLowerCase();
+    g.style.cursor = item.url ? "pointer" : "default";
+
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", item.x);
+    circle.setAttribute("cy", item.y);
+    circle.setAttribute("r", item.type === "cluster" ? "18" : "8");
+    circle.setAttribute("fill", item.color);
+    circle.setAttribute("stroke", "#fffdf8");
+    circle.setAttribute("stroke-width", "2");
+    g.appendChild(circle);
+
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", item.x);
+    text.setAttribute("y", item.y + (item.type === "cluster" ? 36 : 22));
+    text.setAttribute("text-anchor", "middle");
+    text.setAttribute("fill", "#1f2b22");
+    text.setAttribute("font-size", item.type === "cluster" ? "14" : "10");
+    text.setAttribute("font-family", item.type === "cluster" ? "Fraunces, serif" : "IBM Plex Sans, sans-serif");
+    text.textContent = item.label;
+    g.appendChild(text);
+
+    if (item.url) g.addEventListener("click", () => window.open(item.url, "_blank", "noreferrer"));
+    svg.appendChild(g);
+  });
+
+  function applyFilter() {
+    const query = search.value.trim().toLowerCase();
+    let visibleCards = 0;
+    cards.forEach((card) => {
+      const visible = !query || card.dataset.name.toLowerCase().includes(query);
+      card.style.display = visible ? "grid" : "none";
+      if (visible) visibleCards += 1;
+    });
+    sections.forEach((section) => {
+      const anyVisible = [...section.querySelectorAll(".site-card")].some((card) => card.style.display !== "none");
+      section.style.display = anyVisible ? "block" : "none";
+    });
+    [...svg.querySelectorAll("g")].forEach((group) => {
+      const visible = !query || group.dataset.label.includes(query);
+      group.style.opacity = visible ? "1" : "0.12";
+    });
+    count.textContent = query ? `${visibleCards} results` : "Showing all resources";
+  }
+
+  search.addEventListener("input", applyFilter);
+</script>
+
+<style>
+  .hero,
+  .section-head {
+    display: grid;
+    gap: 20px;
+  }
+  .hero {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    align-items: end;
+  }
+  h1 {
+    font-size: clamp(2.6rem, 5vw, 4.8rem);
+    margin-bottom: 12px;
+  }
+  .lede,
+  #resource-count,
+  .site-card p {
+    color: var(--muted);
+  }
+  .search-box {
+    display: grid;
+    gap: 10px;
+  }
+  #resource-search {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--surface-strong);
+    font: inherit;
+    color: var(--ink);
+  }
+  .map-wrap {
+    overflow: auto;
+  }
+  #resource-map {
+    width: 100%;
+    min-height: 680px;
+    display: block;
+  }
+  .site-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .site-card {
+    display: grid;
+    grid-template-columns: 14px 1fr;
+    gap: 14px;
+    align-items: start;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--surface-strong);
+    text-decoration: none;
+    transition: transform 180ms ease, border-color 180ms ease;
+  }
+  .site-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(193, 99, 29, 0.32);
+  }
+  .site-dot {
+    width: 14px;
+    height: 14px;
+    margin-top: 4px;
+    border-radius: 999px;
+  }
+  .site-card h3,
+  .site-card p,
+  .section-head h2 {
+    margin: 0;
+  }
+  .site-card h3 {
+    margin-bottom: 4px;
+    font-size: 1.1rem;
+  }
+  @media (max-width: 900px) {
+    .hero,
+    .site-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

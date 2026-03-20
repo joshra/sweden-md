@@ -1,0 +1,41 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getArticle, getArticlesByCategory } from "../../utils/content";
+
+export async function getStaticPaths() {
+  return getArticlesByCategory("zh-TW", "resources")
+    .filter((article) => !article.isHub)
+    .map((article) => ({
+      params: { slug: article.slug }
+    }));
+}
+
+const { slug } = Astro.params;
+const article = getArticle("zh-TW", "resources", slug!);
+
+if (!article) {
+  throw new Error(`Resource article not found: ${slug}`);
+}
+---
+
+<Layout title={`${article.title} | Sweden.md`} description={article.description} lang="zh-TW">
+  <article class="card prose">
+    <p class="meta">Resources</p>
+    <h1>{article.title}</h1>
+    <div set:html={article.html} />
+  </article>
+</Layout>
+
+<style>
+  .meta {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent-dark);
+    font-size: 0.82rem;
+  }
+
+  .prose {
+    line-height: 1.85;
+  }
+</style>
+

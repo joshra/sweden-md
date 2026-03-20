@@ -1,0 +1,122 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getArticlesByCategory } from "../../utils/content";
+
+const aboutArticles = getArticlesByCategory("en", "about");
+const hub = aboutArticles.find((article) => article.isHub);
+const regularArticles = aboutArticles.filter((article) => !article.isHub);
+---
+
+<Layout title="About Sweden.md" description="Project framing, editorial method, and writing standards for Sweden.md." lang="en">
+  <section class="card">
+    <div class="card-inner hero">
+      <div>
+        <p class="eyebrow">About the project</p>
+        <h1>How Sweden.md is structured.</h1>
+        <p class="lede">{hub?.description || "This section gathers the project's framing, markdown-first workflow, and editorial standards."}</p>
+      </div>
+      <div class="stat">
+        <strong>{regularArticles.length}</strong>
+        <span>method notes</span>
+      </div>
+    </div>
+  </section>
+
+  {hub && (
+    <section class="card">
+      <div class="card-inner prose" set:html={hub.html} />
+    </section>
+  )}
+
+  <section class="card">
+    <div class="card-inner">
+      <p class="eyebrow">Project notes</p>
+      <div class="list">
+        {regularArticles.map((article) => (
+          <a class="item" href={article.href}>
+            <h2>{article.title}</h2>
+            <p>{article.description || article.excerpt}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 20px;
+    align-items: end;
+  }
+
+  h1 {
+    font-size: clamp(2.6rem, 5vw, 4.4rem);
+    margin-bottom: 12px;
+  }
+
+  .lede,
+  .prose :global(p),
+  .item p {
+    color: var(--muted);
+  }
+
+  .stat {
+    min-width: 136px;
+    padding: 18px 22px;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: var(--surface-strong);
+    text-align: center;
+  }
+
+  .stat strong {
+    display: block;
+    font-family: var(--serif);
+    font-size: 2rem;
+  }
+
+  .prose {
+    max-width: 74ch;
+  }
+
+  .list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .item {
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: var(--surface-strong);
+    text-decoration: none;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .item:hover {
+    transform: translateY(-3px);
+    border-color: rgba(193, 99, 29, 0.32);
+  }
+
+  .item h2,
+  .item p {
+    margin: 0;
+  }
+
+  .item h2 {
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+  }
+
+  @media (max-width: 980px) {
+    .hero,
+    .list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

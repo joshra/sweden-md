@@ -1,0 +1,321 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getArticle, getArticlesByCategory, getDynamicCategories } from "../../utils/content";
+import { getCategoryConfig } from "../../utils/categoryConfig";
+import { getCityPhotos } from "../../utils/cityPhotos";
+
+export async function getStaticPaths() {
+  return getDynamicCategories("zh-TW").flatMap((category) =>
+    getArticlesByCategory("zh-TW", category.slug)
+      .filter((article) => !article.isHub)
+      .map((article) => ({
+        params: { category: category.slug, slug: article.slug }
+      }))
+  );
+}
+
+const { category, slug } = Astro.params;
+const article = getArticle("zh-TW", category!, slug!);
+
+if (!article) {
+  throw new Error(`Article not found: ${category}/${slug}`);
+}
+
+const config = getCategoryConfig(category!);
+const siblingArticles = getArticlesByCategory("zh-TW", category!)
+  .filter((entry) => !entry.isHub && entry.slug !== article.slug)
+  .slice(0, 3);
+const relatedArticles = [...article.relatedLinks.slice(0, 3)];
+const cityPhotos = category === "cities" ? getCityPhotos(article.title) : [];
+---
+
+<Layout title={`${article.title} | Sweden.md`} description={article.description || article.excerpt} lang="zh-TW">
+  <section class="card article-hero">
+    <div class="card-inner hero-grid">
+      <div>
+        <a class="breadcrumb" href={`/${category}`}>{config?.emoji} {config?.label}</a>
+        <h1>{article.title}</h1>
+        <p class="lede">{article.description || article.excerpt}</p>
+        {article.summary && <blockquote>{article.summary}</blockquote>}
+      </div>
+      <aside class="article-meta">
+        <div>
+          <strong>{article.readingMinutes}</strong>
+          <span>分鐘閱讀</span>
+        </div>
+        <div>
+          <strong>{article.headings.length}</strong>
+          <span>段落節點</span>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="article-layout">
+    <article class="card">
+      <div class="card-inner prose">
+        {cityPhotos.length > 0 && (
+          <section class="photo-guide">
+            <div class="photo-guide-head">
+              <p class="eyebrow">照片導讀</p>
+              <p>先用三個畫面抓住這座城市的空間感，再往下讀制度、產業與生活節奏。</p>
+            </div>
+
+            <div class="photo-grid">
+              {cityPhotos.map((item) => (
+                <figure>
+                  <img src={item.src} alt={item.altZh} loading="lazy" />
+                  <figcaption>
+                    <span>{item.captionZh}</span>
+                    <a href={item.creditHref} target="_blank" rel="noreferrer">{item.creditLabel}</a>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </section>
+        )}
+        <div set:html={article.html} />
+      </div>
+    </article>
+
+    <aside class="rail">
+      {article.headings.length > 0 && (
+        <section class="card">
+          <div class="card-inner rail-section">
+            <p class="eyebrow">段落導覽</p>
+            <nav class="toc">
+              {article.headings.map((heading) => (
+                <a class:list={[heading.level === 3 && "nested"]} href={`#${heading.id}`}>{heading.text}</a>
+              ))}
+            </nav>
+          </div>
+        </section>
+      )}
+
+      {(relatedArticles.length > 0 || siblingArticles.length > 0) && (
+        <section class="card">
+          <div class="card-inner rail-section">
+            <p class="eyebrow">延伸閱讀</p>
+            <div class="link-list">
+              {relatedArticles.map((item) => (
+                <a href={item.href}>{item.title}</a>
+              ))}
+              {siblingArticles.map((item) => (
+                <a href={item.href}>{item.title}</a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+    </aside>
+  </section>
+</Layout>
+
+<style>
+  .hero-grid,
+  .article-layout {
+    display: grid;
+    gap: 22px;
+  }
+
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr) 220px;
+    align-items: start;
+  }
+
+  .breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    color: var(--forest);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  h1 {
+    font-size: clamp(2.8rem, 5vw, 4.6rem);
+    margin-bottom: 14px;
+  }
+
+  .lede {
+    max-width: 62ch;
+    margin: 0 0 18px;
+    color: var(--muted);
+    font-size: 1.08rem;
+  }
+
+  .article-hero :global(blockquote) {
+    margin: 0;
+    padding: 18px 20px;
+    border-left: 4px solid var(--accent);
+    border-radius: 0 18px 18px 0;
+    background: var(--surface-strong);
+    color: var(--muted);
+  }
+
+  .article-meta {
+    display: grid;
+    gap: 12px;
+  }
+
+  .article-meta div,
+  .rail-section,
+  .toc a,
+  .link-list a {
+    border-radius: 22px;
+  }
+
+  .article-meta div {
+    padding: 18px;
+    border: 1px solid var(--line);
+    background: var(--surface-strong);
+    text-align: center;
+  }
+
+  .article-meta strong {
+    display: block;
+    font-family: var(--serif);
+    font-size: 2rem;
+  }
+
+  .article-layout {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    align-items: start;
+  }
+
+  .rail {
+    display: grid;
+    gap: 18px;
+    position: sticky;
+    top: 96px;
+  }
+
+  .prose {
+    max-width: 76ch;
+  }
+
+  .prose :global(h2),
+  .prose :global(h3) {
+    scroll-margin-top: 110px;
+  }
+
+  .prose :global(h2) {
+    margin-top: 34px;
+    margin-bottom: 12px;
+    font-size: 2rem;
+  }
+
+  .prose :global(h3) {
+    margin-top: 22px;
+    margin-bottom: 10px;
+    font-size: 1.45rem;
+  }
+
+  .prose :global(p),
+  .prose :global(li) {
+    line-height: 1.9;
+  }
+
+  .prose :global(a) {
+    color: var(--accent);
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: 1.2rem;
+  }
+
+  .photo-guide {
+    margin-bottom: 28px;
+  }
+
+  .photo-guide-head {
+    margin-bottom: 14px;
+  }
+
+  .photo-guide-head p:last-child,
+  .photo-grid figcaption {
+    color: var(--muted);
+  }
+
+  .photo-guide-head p:last-child {
+    margin: 0;
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+
+  .photo-grid figure {
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: var(--surface-strong);
+  }
+
+  .photo-grid img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .photo-grid figcaption {
+    display: grid;
+    gap: 8px;
+    padding: 12px 14px 14px;
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  .photo-grid figcaption a {
+    color: var(--forest);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .toc,
+  .link-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .toc a,
+  .link-list a {
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    background: var(--surface-strong);
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .toc a:hover,
+  .link-list a:hover {
+    color: var(--ink);
+    border-color: rgba(193, 99, 29, 0.3);
+  }
+
+  .toc a.nested {
+    margin-left: 12px;
+  }
+
+  @media (max-width: 1040px) {
+    .hero-grid,
+    .article-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .rail {
+      position: static;
+    }
+
+    .photo-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

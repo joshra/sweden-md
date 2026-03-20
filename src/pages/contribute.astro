@@ -1,0 +1,85 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const paths = [
+  {
+    title: "直接寫 Markdown",
+    description: "最完整的方式。編輯 `knowledge/`，照模板與編輯規範補內容。",
+    action: "編輯 knowledge/"
+  },
+  {
+    title: "先提方向",
+    description: "如果還不確定文章範圍，先在 issue 或討論裡提出題目、類別與來源方向。",
+    action: "先提題目"
+  },
+  {
+    title: "補前端與體驗",
+    description: "網站功能、導覽、視覺、SEO、互動圖譜都屬於可貢獻範圍。",
+    action: "前端優化"
+  }
+];
+---
+
+<Layout title="Contribute | Sweden.md" description="參與 Sweden.md：內容、前端與資料整理都可以成為貢獻。" lang="zh-TW">
+  <section class="card">
+    <div class="card-inner hero">
+      <div>
+        <p class="eyebrow">Contribute</p>
+        <h1>這個網站要能長大，靠的不只是文章，還有可持續的參與路徑。</h1>
+        <p class="lede">參照 `taiwan.md`，Sweden.md 需要清楚告訴新參與者可以從哪裡開始，不論是內容、資料還是前端體驗。</p>
+      </div>
+      <div class="button-row">
+        <a class="button" href="/about">先讀編輯方法</a>
+        <a class="button secondary" href="https://github.com/frank890417/taiwan-md" target="_blank" rel="noreferrer">參考 taiwan-md 倉庫</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid">
+    {paths.map((path) => (
+      <article class="card">
+        <div class="card-inner">
+          <p class="eyebrow">{path.action}</p>
+          <h2>{path.title}</h2>
+          <p>{path.description}</p>
+        </div>
+      </article>
+    ))}
+  </section>
+</Layout>
+
+<style>
+  .hero,
+  .grid {
+    display: grid;
+    gap: 18px;
+  }
+  .hero {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+  }
+  h1 {
+    font-size: clamp(2.6rem, 5vw, 4.6rem);
+    margin-bottom: 12px;
+  }
+  .lede,
+  .grid p {
+    color: var(--muted);
+  }
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .grid h2,
+  .grid p {
+    margin: 0;
+  }
+  .grid h2 {
+    margin-bottom: 10px;
+  }
+  @media (max-width: 980px) {
+    .hero,
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

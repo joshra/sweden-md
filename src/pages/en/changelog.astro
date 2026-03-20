@@ -1,0 +1,73 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getAllArticles } from "../../utils/content";
+
+const changes = getAllArticles("en")
+  .filter((article) => !article.isHub)
+  .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+  .slice(0, 12);
+---
+
+<Layout title="Changelog | Sweden.md" description="Recent article and frontend updates in Sweden.md." lang="en">
+  <section class="card">
+    <div class="card-inner hero">
+      <div>
+        <p class="eyebrow">Changelog</p>
+        <h1>Updates should have a reader-facing surface, not live only in commits.</h1>
+        <p class="lede">`taiwan.md` exposes recent movement as part of the site. Sweden.md should also show which knowledge lines are expanding.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="timeline">
+    {changes.map((article) => (
+      <article class="card">
+        <div class="card-inner item">
+          <p class="date">{article.updatedAt.toISOString().slice(0, 10)}</p>
+          <div>
+            <h2><a href={article.href}>{article.title}</a></h2>
+            <p>{article.description || article.excerpt}</p>
+          </div>
+        </div>
+      </article>
+    ))}
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    display: grid;
+    gap: 18px;
+  }
+  h1 {
+    font-size: clamp(2.6rem, 5vw, 4.6rem);
+    margin-bottom: 12px;
+  }
+  .lede,
+  .date,
+  .item p {
+    color: var(--muted);
+  }
+  .timeline {
+    display: grid;
+    gap: 16px;
+  }
+  .item {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+  .item h2,
+  .item p {
+    margin: 0;
+  }
+  .item h2 {
+    margin-bottom: 8px;
+  }
+  @media (max-width: 900px) {
+    .item {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

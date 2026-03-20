@@ -1,0 +1,23 @@
+{
+  "name": "sweden-md",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "sync": "bash scripts/sync.sh",
+    "sync:build": "bash scripts/sync.sh && astro build",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.1",
+    "astro": "^6.0.5",
+    "gray-matter": "^4.0.3",
+    "marked": "^17.0.4"
+  }
+}
+

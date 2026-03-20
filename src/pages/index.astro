@@ -1,39 +1,89 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { getCategories, getFeaturedArticles, getSiteMetrics } from "../utils/content";
+import { getAllArticles, getCategories, getFeaturedArticles, getLatestArticles, getSiteMetrics } from "../utils/content";
 import { withBase } from "../utils/paths";
 
 const categories = getCategories("zh-TW");
 const primaryCategories = categories.filter((category) => !["about", "resources"].includes(category.slug));
-const utilityCategories = categories.filter((category) => ["about", "resources"].includes(category.slug));
 const featuredArticles = getFeaturedArticles("zh-TW");
+const latestArticles = getLatestArticles("zh-TW", 6);
+const allArticles = getAllArticles("zh-TW").filter((article) => !article.isHub);
 const metrics = getSiteMetrics("zh-TW");
-const quickLinks = [
-  ...utilityCategories.map((category) => ({
-    eyebrow: `${category.emoji} ${category.title}`,
-    title: category.description,
-    href: withBase(category.slug === "about" ? "/about" : "/resources")
-  })),
-  { eyebrow: "✋ 貢獻", title: "想補內容、前端或資料入口，從這裡開始。", href: withBase("/contribute") },
-  { eyebrow: "🕒 更新", title: "追蹤最近新增與最近被擴寫的文章。", href: withBase("/changelog") }
+
+const searchIndex = allArticles.map((article) => ({
+  title: article.title,
+  href: article.href,
+  description: article.description || article.excerpt,
+  category: categories.find((category) => category.slug === article.category)?.title || article.category,
+  readingMinutes: article.readingMinutes
+}));
+
+const trendingTopics = [...primaryCategories].sort((a, b) => b.articleCount - a.articleCount).slice(0, 6);
+
+const featuredSeries = [
+  {
+    eyebrow: "國家底圖",
+    title: "先理解歷史、制度與地理，瑞典才不會只剩北歐印象。",
+    href: withBase("/history"),
+    note: "從王國形成、福利國到區域差異，先抓國家的骨架。"
+  },
+  {
+    eyebrow: "日常文化",
+    title: "從 fika、家庭節奏與季節儀式，看價值觀如何落進生活。",
+    href: withBase("/culture"),
+    note: "把抽象的瑞典想像，拆回可感知的日常實踐。"
+  },
+  {
+    eyebrow: "城市與產業",
+    title: "從城市、科技到經濟結構，補上瑞典的現代動能。",
+    href: withBase("/cities"),
+    note: "看見首都之外的區域節點，也看見產業與人才如何流動。"
+  }
+];
+
+const utilityLinks = [
+  { eyebrow: "🗺️ 地圖", title: "用空間方式瀏覽分類與文章。", href: withBase("/map") },
+  { eyebrow: "📚 資源", title: "查官方網站、統計資料與研究入口。", href: withBase("/resources") },
+  { eyebrow: "ℹ️ 關於", title: "理解 Sweden.md 的編輯方向與內容方法。", href: withBase("/about") },
+  { eyebrow: "🕒 更新", title: "追蹤最近新增與最近擴寫的文章。", href: withBase("/changelog") },
+  { eyebrow: "✋ 貢獻", title: "想補內容、前端或資料入口，從這裡開始。", href: withBase("/contribute") }
 ];
 ---
 
-<Layout title="Sweden.md" description="用策展式前端入口理解瑞典的歷史、社會、文化與技術。 " lang="zh-TW">
+<Layout
+  title="Sweden.md"
+  description="用策展式前端入口理解瑞典的歷史、社會、文化與技術。"
+  lang="zh-TW"
+  pageType="home"
+>
   <section class="card hero">
     <div class="card-inner hero-grid">
       <div>
         <p class="eyebrow">Curated knowledge base for Sweden</p>
-        <h1>不是把文章排上網，而是先替讀者鋪好進入瑞典的路徑。</h1>
+        <h1>首頁應該先把人帶進內容，不是先介紹站怎麼做。</h1>
         <p class="lede">
-          參照 `taiwan.md` 的做法，Sweden.md 首頁應該先回答「從哪裡開始理解瑞典」，而不只是展示
-          `knowledge/` 的存在。這裡把歷史、制度、文化與自然放進同一個可探索的入口。
+          Sweden.md 的第一屏現在改成讀者入口：先搜尋、再看熱門主題、編輯精選與最新整理，讓第一次進站的人能直接找到值得讀的內容。
         </p>
+
         <div class="button-row">
-          <a class="button" href="#featured">從 5 篇開始</a>
-          <a class="button secondary" href="#categories">瀏覽全部分類</a>
-          <a class="button secondary" href={withBase("/graph")}>知識圖譜</a>
+          <a class="button" href="#search">站內搜尋</a>
+          <a class="button secondary" href="#featured">編輯精選</a>
+          <a class="button secondary" href="#latest">最新整理</a>
         </div>
+
+        <form id="search" class="search-panel" action={withBase("/graph")}>
+          <label class="search-label" for="home-search">搜尋文章、分類或主題</label>
+          <input id="home-search" type="search" name="q" placeholder="例如：福利國、Fika、斯德哥爾摩、Spotify" autocomplete="off" />
+          <div id="search-results" class="search-results" aria-live="polite">
+            {searchIndex.slice(0, 6).map((article) => (
+              <a class="search-result" href={article.href} data-search-item>
+                <span class="search-meta">{article.category} · {article.readingMinutes} 分鐘</span>
+                <strong>{article.title}</strong>
+                <span>{article.description}</span>
+              </a>
+            ))}
+          </div>
+        </form>
       </div>
 
       <div class="hero-side">
@@ -47,43 +97,66 @@ const quickLinks = [
             <span>核心分類</span>
           </article>
           <article>
-            <strong>雙語</strong>
-            <span>中英對照架構</span>
+            <strong>{featuredArticles.length}</strong>
+            <span>起手精選</span>
           </article>
           <article>
-            <strong>SSOT</strong>
-            <span>`knowledge/` 為內容母本</span>
+            <strong>{latestArticles.length}</strong>
+            <span>近期整理</span>
           </article>
         </div>
 
         <div class="signal">
-          <p class="signal-label">為什麼這種入口有效</p>
+          <p class="signal-label">首頁邏輯</p>
           <p>
-            `taiwan.md` 最值得學的地方，是它把首頁當成策展展場入口，而不是 README。讀者先感受到國家的輪廓，再決定深入哪一條線。
+            這裡先回答「我現在該點什麼」，再把圖譜、地圖、資源與站務降到第二層。對內容站來說，這才是比較接近流量與閱讀意圖的排序。
           </p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="split">
+  <section id="trending" class="split">
     <article class="card">
       <div class="card-inner">
-        <p class="eyebrow">理解瑞典的三條線</p>
-        <h2>先抓結構，再讀細節。</h2>
-        <p>
-          瑞典不是只有北歐設計或福利國。這個網站把閱讀動線拆成三個層次：先看制度與歷史如何塑造國家，再看日常文化如何把抽象價值落地，最後回到技術、自然與地方差異。
-        </p>
+        <div class="section-head compact">
+          <div>
+            <p class="eyebrow">Trending topics</p>
+            <h2>熱門主題</h2>
+          </div>
+          <p class="section-note">以現有內容密度作為入口代理，先看大家最容易一路讀下去的區塊。</p>
+        </div>
+
+        <div class="topic-cluster">
+          {trendingTopics.map((category) => (
+            <a class="topic-chip" href={category.href}>
+              <span>{category.emoji} {category.title}</span>
+              <strong>{category.articleCount} 篇</strong>
+            </a>
+          ))}
+        </div>
       </div>
     </article>
 
     <article class="card">
       <div class="card-inner">
-        <p class="eyebrow">前端優化目標</p>
-        <h2>把內容網絡顯性化。</h2>
-        <p>
-          這一版首頁優先補上 `taiwan.md` 擅長的三件事：強 hero、清楚的起手閱讀清單、以及能快速橫向移動的分類入口。
-        </p>
+        <div class="section-head compact">
+          <div>
+            <p class="eyebrow">Series</p>
+            <h2>系列入口</h2>
+          </div>
+          <p class="section-note">不要只跳單篇，先從一條敘事線進站。</p>
+        </div>
+
+        <div class="series-list">
+          {featuredSeries.map((series) => (
+            <a class="series-card" href={series.href}>
+              <p class="eyebrow">{series.eyebrow}</p>
+              <h3>{series.title}</h3>
+              <p>{series.note}</p>
+            </a>
+          ))}
+        </div>
       </div>
     </article>
   </section>
@@ -92,10 +165,10 @@ const quickLinks = [
     <div class="card-inner">
       <div class="section-head">
         <div>
-          <p class="eyebrow">Start here</p>
-          <h2>不知道從哪開始，就先讀這 5 篇。</h2>
+          <p class="eyebrow">Editor's picks</p>
+          <h2>編輯精選</h2>
         </div>
-        <p class="section-note">用 30 分鐘抓到瑞典最核心的幾條敘事線。</p>
+        <p class="section-note">這不是按分類排版，而是替第一次進站的人先排好五篇起手式。</p>
       </div>
 
       <div class="feature-grid">
@@ -114,14 +187,37 @@ const quickLinks = [
     </div>
   </section>
 
+  <section id="latest" class="card">
+    <div class="card-inner">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Latest</p>
+          <h2>最新整理</h2>
+        </div>
+        <p class="section-note">目前沒有真實流量資料，所以這裡用最近更新時間做可辯護的「最新內容」入口。</p>
+      </div>
+
+      <div class="latest-grid">
+        {latestArticles.map((article) => (
+          <a class="latest-card" href={article.href}>
+            <span class="latest-category">{categories.find((category) => category.slug === article.category)?.title}</span>
+            <h3>{article.title}</h3>
+            <p>{article.description || article.excerpt}</p>
+            <span class="latest-meta">{article.updatedAt.toLocaleDateString("zh-TW")} · {article.readingMinutes} 分鐘</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <section id="categories" class="card">
     <div class="card-inner">
       <div class="section-head">
         <div>
           <p class="eyebrow">Explore</p>
-          <h2>從分類切入，而不是在文章海裡迷路。</h2>
+          <h2>全部主題入口</h2>
         </div>
-        <p class="section-note">每個分類都先給一個策展視角，再延伸到具體文章。</p>
+        <p class="section-note">保留完整分類，但不再讓它們壓過搜尋、熱門與精選。</p>
       </div>
 
       <div class="category-grid">
@@ -139,34 +235,100 @@ const quickLinks = [
     </div>
   </section>
 
-  <section class="utility-grid">
-    {quickLinks.map((item) => (
-      <a class="card utility-card" href={item.href}>
-        <div class="card-inner">
-          <p class="eyebrow">{item.eyebrow}</p>
-          <h2>{item.title}</h2>
-        </div>
-      </a>
-    ))}
+  <section class="toolbox">
+    <div class="section-head compact">
+      <div>
+        <p class="eyebrow">Tools and site</p>
+        <h2>工具與站務</h2>
+      </div>
+      <p class="section-note">這些仍然重要，但不該比內容入口更先被看到。</p>
+    </div>
+
+    <div class="utility-grid">
+      {utilityLinks.map((item) => (
+        <a class="card utility-card" href={item.href}>
+          <div class="card-inner">
+            <p class="eyebrow">{item.eyebrow}</p>
+            <h3>{item.title}</h3>
+          </div>
+        </a>
+      ))}
+    </div>
   </section>
 </Layout>
+
+<script define:vars={{ searchIndex }}>
+  const input = document.getElementById("home-search");
+  const results = document.getElementById("search-results");
+
+  if (input instanceof HTMLInputElement && results instanceof HTMLElement) {
+    const renderResults = (items) => {
+      results.innerHTML = items
+        .map(
+          (article) => `
+            <a class="search-result" href="${article.href}">
+              <span class="search-meta">${article.category} · ${article.readingMinutes} 分鐘</span>
+              <strong>${article.title}</strong>
+              <span>${article.description}</span>
+            </a>
+          `
+        )
+        .join("");
+    };
+
+    const defaultResults = searchIndex.slice(0, 6);
+    renderResults(defaultResults);
+
+    input.addEventListener("input", () => {
+      const query = input.value.trim().toLowerCase();
+
+      if (!query) {
+        renderResults(defaultResults);
+        return;
+      }
+
+      const filtered = searchIndex
+        .filter((article) =>
+          [article.title, article.description, article.category].some((field) =>
+            field.toLowerCase().includes(query)
+          )
+        )
+        .slice(0, 6);
+
+      renderResults(
+        filtered.length
+          ? filtered
+          : [
+              {
+                href: `${withBase("/graph")}?q=${encodeURIComponent(query)}`,
+                category: "繼續搜尋",
+                title: `找不到精準結果，改到知識圖譜搜尋「${query}」`,
+                description: "前往圖譜頁查看完整文章與分類網絡。",
+                readingMinutes: "圖譜"
+              }
+            ]
+      );
+    });
+  }
+</script>
 
 <style>
   .hero-grid,
   .split,
   .section-head,
-  .utility-grid {
+  .utility-grid,
+  .latest-grid {
     display: grid;
     gap: 22px;
   }
 
   .hero-grid {
-    grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.9fr);
+    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.85fr);
     align-items: start;
   }
 
   h1 {
-    font-size: clamp(3rem, 6vw, 5.8rem);
+    font-size: clamp(3rem, 6vw, 5.6rem);
     max-width: 10ch;
     margin-bottom: 18px;
   }
@@ -178,9 +340,107 @@ const quickLinks = [
     font-size: 1.08rem;
   }
 
-  .hero-side {
+  .hero-side,
+  .series-list,
+  .toolbox {
     display: grid;
     gap: 16px;
+  }
+
+  .search-panel,
+  .signal,
+  .stat-grid article,
+  .feature-card,
+  .category-card,
+  .latest-card,
+  .series-card,
+  .topic-chip,
+  .search-result {
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: var(--surface-strong);
+  }
+
+  .search-panel {
+    display: grid;
+    gap: 12px;
+    margin-top: 24px;
+    padding: 18px;
+  }
+
+  .search-label,
+  .signal-label,
+  .search-meta,
+  .latest-category,
+  .latest-meta,
+  .feature-meta,
+  .count,
+  .section-note,
+  .category-card p,
+  .series-card p,
+  .utility-card p {
+    color: var(--muted);
+  }
+
+  .search-label,
+  .signal-label,
+  .latest-category {
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  #home-search {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.65);
+    color: var(--ink);
+    font: inherit;
+  }
+
+  #home-search:focus {
+    outline: 2px solid rgba(193, 99, 29, 0.24);
+    outline-offset: 2px;
+  }
+
+  .search-results {
+    display: grid;
+    gap: 10px;
+  }
+
+  .search-result {
+    display: grid;
+    gap: 4px;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .search-result:hover,
+  .search-result:focus-visible,
+  .feature-card:hover,
+  .feature-card:focus-visible,
+  .category-card:hover,
+  .category-card:focus-visible,
+  .latest-card:hover,
+  .latest-card:focus-visible,
+  .series-card:hover,
+  .series-card:focus-visible,
+  .topic-chip:hover,
+  .topic-chip:focus-visible,
+  .utility-card:hover,
+  .utility-card:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(193, 99, 29, 0.28);
+  }
+
+  .hero-side {
+    gap: 18px;
   }
 
   .stat-grid {
@@ -190,15 +450,7 @@ const quickLinks = [
   }
 
   .stat-grid article,
-  .signal,
-  .feature-card,
-  .category-card {
-    border: 1px solid var(--line);
-    border-radius: 22px;
-    background: var(--surface-strong);
-  }
-
-  .stat-grid article {
+  .signal {
     padding: 18px;
   }
 
@@ -206,28 +458,6 @@ const quickLinks = [
     display: block;
     font-family: var(--serif);
     font-size: 2rem;
-  }
-
-  .stat-grid span,
-  .signal,
-  .section-note,
-  .feature-meta,
-  .category-card p,
-  .utility-card p {
-    color: var(--muted);
-  }
-
-  .signal {
-    padding: 20px;
-  }
-
-  .signal-label {
-    margin: 0 0 8px;
-    color: var(--forest);
-    font-size: 0.82rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
   }
 
   .split {
@@ -240,65 +470,78 @@ const quickLinks = [
     margin-bottom: 22px;
   }
 
+  .section-head.compact {
+    margin-bottom: 18px;
+  }
+
   .section-head h2 {
     font-size: clamp(2rem, 3vw, 3rem);
   }
 
+  .topic-cluster,
   .feature-grid,
   .category-grid,
-  .utility-grid {
+  .utility-grid,
+  .latest-grid {
     display: grid;
     gap: 16px;
   }
 
-  .feature-grid {
+  .topic-cluster {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .topic-chip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px;
+    text-decoration: none;
+  }
+
+  .topic-chip strong {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+  }
+
+  .series-card,
+  .latest-card,
+  .category-card,
+  .feature-card {
+    text-decoration: none;
+  }
+
+  .series-card,
+  .latest-card {
+    display: grid;
+    gap: 8px;
+    padding: 20px;
+  }
+
+  .feature-grid,
+  .latest-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .feature-card {
     display: grid;
     grid-template-columns: auto 1fr auto;
-    gap: 16px;
-    align-items: start;
+    gap: 18px;
     padding: 20px;
-    text-decoration: none;
-    transition:
-      transform 180ms ease,
-      border-color 180ms ease;
-  }
-
-  .feature-card:hover,
-  .category-card:hover,
-  .utility-card:hover {
-    transform: translateY(-3px);
-    border-color: rgba(193, 99, 29, 0.32);
   }
 
   .index {
     font-family: var(--serif);
     font-size: 2rem;
     color: var(--accent);
-  }
-
-  .feature-meta,
-  .count {
-    font-size: 0.9rem;
-  }
-
-  .feature-card h3,
-  .category-card h3 {
-    margin: 6px 0 10px;
-    font-size: 1.45rem;
-  }
-
-  .feature-card p,
-  .category-card p {
-    margin: 0;
+    line-height: 1;
   }
 
   .read-time {
-    white-space: nowrap;
+    align-self: start;
     color: var(--forest);
+    font-size: 0.88rem;
     font-weight: 600;
   }
 
@@ -307,11 +550,9 @@ const quickLinks = [
   }
 
   .category-card {
-    padding: 22px;
-    text-decoration: none;
-    transition:
-      transform 180ms ease,
-      border-color 180ms ease;
+    display: grid;
+    gap: 12px;
+    padding: 20px;
   }
 
   .category-top {
@@ -326,18 +567,11 @@ const quickLinks = [
   }
 
   .utility-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .utility-card {
     text-decoration: none;
-    transition:
-      transform 180ms ease,
-      border-color 180ms ease;
-  }
-
-  .utility-card h2 {
-    font-size: 1.5rem;
   }
 
   @media (max-width: 980px) {
@@ -346,7 +580,9 @@ const quickLinks = [
     .feature-grid,
     .category-grid,
     .utility-grid,
-    .section-head {
+    .latest-grid,
+    .section-head,
+    .topic-cluster {
       grid-template-columns: 1fr;
     }
 

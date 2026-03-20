@@ -1,42 +1,89 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getCategories, getFeaturedArticles, getSiteMetrics } from "../../utils/content";
+import { getAllArticles, getCategories, getFeaturedArticles, getLatestArticles, getSiteMetrics } from "../../utils/content";
 import { withBase } from "../../utils/paths";
 
 const categories = getCategories("en");
 const primaryCategories = categories.filter((category) => !["about", "resources"].includes(category.slug));
-const utilityCategories = categories.filter((category) => ["about", "resources"].includes(category.slug));
 const featuredArticles = getFeaturedArticles("en");
+const latestArticles = getLatestArticles("en", 6);
+const allArticles = getAllArticles("en").filter((article) => !article.isHub);
 const metrics = getSiteMetrics("en");
-const quickLinks = [
-  ...utilityCategories.map((category) => ({
-    eyebrow: `${category.emoji} ${category.title}`,
-    title: category.description,
-    href: withBase(category.slug === "about" ? "/en/about" : "/en/resources")
-  })),
-  { eyebrow: "✋ Contribute", title: "Start here if you want to add content, frontend work, or resource curation.", href: withBase("/en/contribute") },
-  { eyebrow: "🕒 Changelog", title: "Follow the latest additions and expansions across the site.", href: withBase("/en/changelog") }
+
+const searchIndex = allArticles.map((article) => ({
+  title: article.title,
+  href: article.href,
+  description: article.description || article.excerpt,
+  category: categories.find((category) => category.slug === article.category)?.title || article.category,
+  readingMinutes: article.readingMinutes
+}));
+
+const trendingTopics = [...primaryCategories].sort((a, b) => b.articleCount - a.articleCount).slice(0, 6);
+
+const featuredSeries = [
+  {
+    eyebrow: "State and history",
+    title: "Start with institutional history before Sweden collapses into stereotype.",
+    href: withBase("/en/history"),
+    note: "Build a frame through state formation, welfare, and regional difference."
+  },
+  {
+    eyebrow: "Daily life",
+    title: "Enter through fika, family rhythms, and seasonal rituals.",
+    href: withBase("/en/culture"),
+    note: "A route for readers who want values translated into lived practice."
+  },
+  {
+    eyebrow: "Cities and industry",
+    title: "Move from urban nodes into technology, labor, and modern economic life.",
+    href: withBase("/en/cities"),
+    note: "A more contemporary path through Sweden's spatial and industrial structure."
+  }
+];
+
+const utilityLinks = [
+  { eyebrow: "🗺️ Map", title: "Browse the site through place and spatial clusters.", href: withBase("/en/map") },
+  { eyebrow: "📚 Resources", title: "Jump into official sites, data portals, and research sources.", href: withBase("/en/resources") },
+  { eyebrow: "ℹ️ About", title: "Read the editorial framing and project method.", href: withBase("/en/about") },
+  { eyebrow: "🕒 Changelog", title: "Track newly added and expanded articles.", href: withBase("/en/changelog") },
+  { eyebrow: "✋ Contribute", title: "Start here if you want to improve content or frontend structure.", href: withBase("/en/contribute") }
 ];
 ---
 
 <Layout
   title="Sweden.md English"
-  description="A curated frontend entry point into Sweden's history, institutions, culture, and technology."
+  description="A curated entry point into Sweden's history, institutions, culture, and technology."
   lang="en"
+  pageType="home"
 >
-  <section class="card hero">
+  <section class="card hero cover-panel">
     <div class="card-inner hero-grid">
       <div>
         <p class="eyebrow">Curated knowledge base for Sweden</p>
-        <h1>A homepage should guide readers into Sweden, not just describe the repo.</h1>
+        <h1>The homepage should route readers into content, not into site admin.</h1>
         <p class="lede">
-          The strongest lesson from `taiwan.md` is editorial entry design: give readers a first route through the country, then let them branch into history, institutions, daily life, and technology.
+          The landing surface now prioritizes search, trending topics, editorial picks, and recent updates, so first-time readers can find something worth reading immediately.
         </p>
+
         <div class="button-row">
-          <a class="button" href="#featured">Start with 5 essays</a>
-          <a class="button secondary" href="#categories">Browse categories</a>
-          <a class="button secondary" href={withBase("/en/graph")}>Knowledge graph</a>
+          <a class="button" href="#search">Search the site</a>
+          <a class="button secondary" href="#featured">Editor's picks</a>
+          <a class="button secondary" href="#latest">Latest updates</a>
         </div>
+
+        <form id="search" class="search-panel" action={withBase("/en/graph")}>
+          <label class="search-label" for="home-search">Search essays, categories, or topics</label>
+          <input id="home-search" type="search" name="q" placeholder="For example: welfare, fika, Stockholm, Spotify" autocomplete="off" />
+          <div id="search-results" class="search-results" aria-live="polite">
+            {searchIndex.slice(0, 6).map((article) => (
+              <a class="search-result" href={article.href} data-search-item>
+                <span class="search-meta">{article.category} · {article.readingMinutes} min</span>
+                <strong>{article.title}</strong>
+                <span>{article.description}</span>
+              </a>
+            ))}
+          </div>
+        </form>
       </div>
 
       <div class="hero-side">
@@ -50,55 +97,78 @@ const quickLinks = [
             <span>Core categories</span>
           </article>
           <article>
-            <strong>Bilingual</strong>
-            <span>Parallel English structure</span>
+            <strong>{featuredArticles.length}</strong>
+            <span>Starter picks</span>
           </article>
           <article>
-            <strong>SSOT</strong>
-            <span>Markdown-first architecture</span>
+            <strong>{latestArticles.length}</strong>
+            <span>Recent updates</span>
           </article>
         </div>
 
         <div class="signal">
-          <p class="signal-label">Design goal</p>
+          <p class="signal-label">Navigation logic</p>
           <p>
-            `taiwan.md` feels alive because it turns editorial structure into navigation. This version applies that lesson to Sweden.md with a stronger hero, featured reading paths, and clearer category movement.
+            Tools such as graph, map, resources, and about still matter, but they now sit behind the main reading paths instead of occupying the first layer of attention.
           </p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="split">
+  <section id="trending" class="split">
     <article class="card">
       <div class="card-inner">
-        <p class="eyebrow">Three reading layers</p>
-        <h2>Orientation first, depth second.</h2>
-        <p>
-          Readers should be able to enter Sweden through a few clear lenses, then decide where to go deeper. The homepage now foregrounds those lenses instead of exposing internal project structure.
-        </p>
+        <div class="section-head compact">
+          <div>
+            <p class="eyebrow">Trending topics</p>
+            <h2>High-density themes</h2>
+          </div>
+          <p class="section-note">Using category depth as an honest proxy for where readers can keep going.</p>
+        </div>
+
+        <div class="topic-cluster">
+          {trendingTopics.map((category) => (
+            <a class="topic-chip" href={category.href}>
+              <span>{category.emoji} {category.title}</span>
+              <strong>{category.articleCount} articles</strong>
+            </a>
+          ))}
+        </div>
       </div>
     </article>
 
     <article class="card">
       <div class="card-inner">
-        <p class="eyebrow">Frontend optimization</p>
-        <h2>Make the knowledge network legible.</h2>
-        <p>
-          The first pass focuses on the same strengths that make `taiwan.md` work: a forceful landing section, a curated starting list, and category cards that carry editorial framing.
-        </p>
+        <div class="section-head compact">
+          <div>
+            <p class="eyebrow">Series</p>
+            <h2>Editorial entry paths</h2>
+          </div>
+          <p class="section-note">Enter through a reading path, not a random single page.</p>
+        </div>
+
+        <div class="series-list">
+          {featuredSeries.map((series) => (
+            <a class="series-card" href={series.href}>
+              <p class="eyebrow">{series.eyebrow}</p>
+              <h3>{series.title}</h3>
+              <p>{series.note}</p>
+            </a>
+          ))}
+        </div>
       </div>
     </article>
   </section>
 
-  <section id="featured" class="card">
+  <section id="featured" class="card editorial-band">
     <div class="card-inner">
       <div class="section-head">
         <div>
-          <p class="eyebrow">Start here</p>
-          <h2>Five pieces to build a first mental map of Sweden.</h2>
+          <p class="eyebrow">Editor's picks</p>
+          <h2>Five essays to orient a first visit.</h2>
         </div>
-        <p class="section-note">A compact path across state, society, culture, nature, and technology.</p>
+        <p class="section-note">Curated as a starting route rather than a flat category sample.</p>
       </div>
 
       <div class="feature-grid">
@@ -117,14 +187,37 @@ const quickLinks = [
     </div>
   </section>
 
-  <section id="categories" class="card">
+  <section id="latest" class="card editorial-band latest-band">
+    <div class="card-inner">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Latest</p>
+          <h2>Recently updated</h2>
+        </div>
+        <p class="section-note">There is no live analytics layer yet, so this uses file update time as a defensible freshness signal.</p>
+      </div>
+
+      <div class="latest-grid">
+        {latestArticles.map((article) => (
+          <a class="latest-card" href={article.href}>
+            <span class="latest-category">{categories.find((category) => category.slug === article.category)?.title}</span>
+            <h3>{article.title}</h3>
+            <p>{article.description || article.excerpt}</p>
+            <span class="latest-meta">{article.updatedAt.toLocaleDateString("en-US")} · {article.readingMinutes} min</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="categories" class="card editorial-band categories-band">
     <div class="card-inner">
       <div class="section-head">
         <div>
           <p class="eyebrow">Explore</p>
-          <h2>Move by category, not by accident.</h2>
+          <h2>All category entry points</h2>
         </div>
-        <p class="section-note">Each category page begins with a framing essay and opens into individual articles.</p>
+        <p class="section-note">The full taxonomy stays visible, but it no longer outranks search and editorial discovery.</p>
       </div>
 
       <div class="category-grid">
@@ -142,34 +235,108 @@ const quickLinks = [
     </div>
   </section>
 
-  <section class="utility-grid">
-    {quickLinks.map((item) => (
-      <a class="card utility-card" href={item.href}>
-        <div class="card-inner">
-          <p class="eyebrow">{item.eyebrow}</p>
-          <h2>{item.title}</h2>
-        </div>
-      </a>
-    ))}
+  <section class="toolbox">
+    <div class="section-head compact">
+      <div>
+        <p class="eyebrow">Tools and site</p>
+        <h2>Utility pages</h2>
+      </div>
+      <p class="section-note">Important, but intentionally secondary to reading and discovery.</p>
+    </div>
+
+    <div class="utility-grid">
+      {utilityLinks.map((item) => (
+        <a class="card utility-card" href={item.href}>
+          <div class="card-inner">
+            <p class="eyebrow">{item.eyebrow}</p>
+            <h3>{item.title}</h3>
+          </div>
+        </a>
+      ))}
+    </div>
   </section>
 </Layout>
+
+<script define:vars={{ searchIndex }}>
+  const input = document.getElementById("home-search");
+  const results = document.getElementById("search-results");
+
+  if (input instanceof HTMLInputElement && results instanceof HTMLElement) {
+    const renderResults = (items) => {
+      results.innerHTML = items
+        .map(
+          (article) => `
+            <a class="search-result" href="${article.href}">
+              <span class="search-meta">${article.category} · ${article.readingMinutes} min</span>
+              <strong>${article.title}</strong>
+              <span>${article.description}</span>
+            </a>
+          `
+        )
+        .join("");
+    };
+
+    const defaultResults = searchIndex.slice(0, 6);
+    renderResults(defaultResults);
+
+    input.addEventListener("input", () => {
+      const query = input.value.trim().toLowerCase();
+
+      if (!query) {
+        renderResults(defaultResults);
+        return;
+      }
+
+      const filtered = searchIndex
+        .filter((article) =>
+          [article.title, article.description, article.category].some((field) =>
+            field.toLowerCase().includes(query)
+          )
+        )
+        .slice(0, 6);
+
+      renderResults(
+        filtered.length
+          ? filtered
+          : [
+              {
+                href: `${withBase("/en/graph")}?q=${encodeURIComponent(query)}`,
+                category: "Keep searching",
+                title: `No exact match. Search "${query}" in the graph view.`,
+                description: "Continue into the full category and article network.",
+                readingMinutes: "Graph"
+              }
+            ]
+      );
+    });
+  }
+</script>
 
 <style>
   .hero-grid,
   .split,
   .section-head,
-  .utility-grid {
+  .utility-grid,
+  .latest-grid {
     display: grid;
     gap: 22px;
   }
 
   .hero-grid {
-    grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.9fr);
+    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.85fr);
     align-items: start;
+    min-height: 500px;
+  }
+
+  .cover-panel {
+    background:
+      radial-gradient(circle at 78% 16%, rgba(34, 93, 109, 0.22), transparent 24%),
+      radial-gradient(circle at 10% 10%, rgba(191, 106, 43, 0.16), transparent 22%),
+      linear-gradient(180deg, rgba(255, 248, 238, 0.98), rgba(247, 239, 228, 0.92));
   }
 
   h1 {
-    font-size: clamp(3rem, 6vw, 5.8rem);
+    font-size: clamp(3rem, 6vw, 5.6rem);
     max-width: 10ch;
     margin-bottom: 18px;
   }
@@ -181,9 +348,121 @@ const quickLinks = [
     font-size: 1.08rem;
   }
 
-  .hero-side {
+  .hero h1 {
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  }
+
+  .hero-side,
+  .series-list,
+  .toolbox {
     display: grid;
     gap: 16px;
+  }
+
+  .hero-side {
+    align-self: stretch;
+  }
+
+  .search-panel,
+  .signal,
+  .stat-grid article,
+  .feature-card,
+  .category-card,
+  .latest-card,
+  .series-card,
+  .topic-chip,
+  .search-result {
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: var(--surface-strong);
+  }
+
+  .search-panel {
+    background:
+      linear-gradient(180deg, rgba(255, 254, 250, 0.9), rgba(248, 239, 226, 0.92)),
+      repeating-linear-gradient(0deg, transparent 0, transparent 26px, rgba(31, 43, 34, 0.04) 26px, rgba(31, 43, 34, 0.04) 27px);
+  }
+
+  .search-panel {
+    display: grid;
+    gap: 12px;
+    margin-top: 24px;
+    padding: 18px;
+  }
+
+  .search-label,
+  .signal-label,
+  .search-meta,
+  .latest-category,
+  .latest-meta,
+  .feature-meta,
+  .count,
+  .section-note,
+  .category-card p,
+  .series-card p,
+  .utility-card p {
+    color: var(--muted);
+  }
+
+  .search-label,
+  .signal-label,
+  .latest-category {
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  #home-search {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.65);
+    color: var(--ink);
+    font: inherit;
+  }
+
+  #home-search:focus {
+    outline: 2px solid rgba(193, 99, 29, 0.24);
+    outline-offset: 2px;
+  }
+
+  .search-results {
+    display: grid;
+    gap: 10px;
+  }
+
+  .search-result {
+    display: grid;
+    gap: 4px;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .search-result:hover,
+  .search-result:focus-visible,
+  .feature-card:hover,
+  .feature-card:focus-visible,
+  .category-card:hover,
+  .category-card:focus-visible,
+  .latest-card:hover,
+  .latest-card:focus-visible,
+  .series-card:hover,
+  .series-card:focus-visible,
+  .topic-chip:hover,
+  .topic-chip:focus-visible,
+  .utility-card:hover,
+  .utility-card:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(193, 99, 29, 0.28);
+  }
+
+  .hero-side {
+    gap: 18px;
   }
 
   .stat-grid {
@@ -193,44 +472,34 @@ const quickLinks = [
   }
 
   .stat-grid article,
-  .signal,
-  .feature-card,
-  .category-card {
-    border: 1px solid var(--line);
-    border-radius: 22px;
-    background: var(--surface-strong);
+  .signal {
+    padding: 18px;
   }
 
   .stat-grid article {
-    padding: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-grid article::after {
+    content: "";
+    position: absolute;
+    inset: auto -18% -46% 34%;
+    height: 120px;
+    background: radial-gradient(circle, rgba(191, 106, 43, 0.18), transparent 68%);
+    pointer-events: none;
+  }
+
+  .signal {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(248, 239, 227, 0.92)),
+      repeating-linear-gradient(0deg, transparent 0, transparent 27px, rgba(46, 87, 65, 0.04) 27px, rgba(46, 87, 65, 0.04) 28px);
   }
 
   .stat-grid strong {
     display: block;
     font-family: var(--serif);
     font-size: 2rem;
-  }
-
-  .stat-grid span,
-  .signal,
-  .section-note,
-  .feature-meta,
-  .category-card p,
-  .utility-card p {
-    color: var(--muted);
-  }
-
-  .signal {
-    padding: 20px;
-  }
-
-  .signal-label {
-    margin: 0 0 8px;
-    color: var(--forest);
-    font-size: 0.82rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
   }
 
   .split {
@@ -243,65 +512,82 @@ const quickLinks = [
     margin-bottom: 22px;
   }
 
+  .section-head.compact {
+    margin-bottom: 18px;
+  }
+
   .section-head h2 {
     font-size: clamp(2rem, 3vw, 3rem);
   }
 
+  .editorial-band {
+    border-radius: 34px;
+  }
+
+  .topic-cluster,
   .feature-grid,
   .category-grid,
-  .utility-grid {
+  .utility-grid,
+  .latest-grid {
     display: grid;
     gap: 16px;
   }
 
-  .feature-grid {
+  .topic-cluster {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .topic-chip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px;
+    text-decoration: none;
+  }
+
+  .topic-chip strong {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+  }
+
+  .series-card,
+  .latest-card,
+  .category-card,
+  .feature-card {
+    text-decoration: none;
+  }
+
+  .series-card,
+  .latest-card {
+    display: grid;
+    gap: 8px;
+    padding: 20px;
+  }
+
+  .feature-grid,
+  .latest-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .feature-card {
     display: grid;
     grid-template-columns: auto 1fr auto;
-    gap: 16px;
-    align-items: start;
+    gap: 18px;
     padding: 20px;
-    text-decoration: none;
-    transition:
-      transform 180ms ease,
-      border-color 180ms ease;
-  }
-
-  .feature-card:hover,
-  .category-card:hover,
-  .utility-card:hover {
-    transform: translateY(-3px);
-    border-color: rgba(193, 99, 29, 0.32);
   }
 
   .index {
     font-family: var(--serif);
     font-size: 2rem;
     color: var(--accent);
-  }
-
-  .feature-meta,
-  .count {
-    font-size: 0.9rem;
-  }
-
-  .feature-card h3,
-  .category-card h3 {
-    margin: 6px 0 10px;
-    font-size: 1.45rem;
-  }
-
-  .feature-card p,
-  .category-card p {
-    margin: 0;
+    line-height: 1;
   }
 
   .read-time {
-    white-space: nowrap;
+    align-self: start;
     color: var(--forest);
+    font-size: 0.88rem;
     font-weight: 600;
   }
 
@@ -310,11 +596,9 @@ const quickLinks = [
   }
 
   .category-card {
-    padding: 22px;
-    text-decoration: none;
-    transition:
-      transform 180ms ease,
-      border-color 180ms ease;
+    display: grid;
+    gap: 12px;
+    padding: 20px;
   }
 
   .category-top {
@@ -329,18 +613,11 @@ const quickLinks = [
   }
 
   .utility-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .utility-card {
     text-decoration: none;
-    transition:
-      transform 180ms ease,
-      border-color 180ms ease;
-  }
-
-  .utility-card h2 {
-    font-size: 1.5rem;
   }
 
   @media (max-width: 980px) {
@@ -349,7 +626,9 @@ const quickLinks = [
     .feature-grid,
     .category-grid,
     .utility-grid,
-    .section-head {
+    .latest-grid,
+    .section-head,
+    .topic-cluster {
       grid-template-columns: 1fr;
     }
 

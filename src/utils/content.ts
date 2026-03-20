@@ -297,6 +297,13 @@ export function getAllArticles(locale: "zh-TW" | "en") {
   return getCategories(locale).flatMap((category) => getArticlesByCategory(locale, category.slug));
 }
 
+export function getLatestArticles(locale: "zh-TW" | "en", limit = 6) {
+  return getAllArticles(locale)
+    .filter((article) => !article.isHub)
+    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+    .slice(0, limit);
+}
+
 export function getHomeArticle(locale: "zh-TW" | "en") {
   const homePath =
     locale === "zh-TW"

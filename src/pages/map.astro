@@ -5,8 +5,8 @@ import { mapMarkersZh } from "../data/swedenMap";
 const markers = JSON.stringify(mapMarkersZh);
 ---
 
-<Layout title="瑞典地圖 | Sweden.md" description="用空間、區域與主題篩選探索 Sweden.md 的地理入口。" lang="zh-TW">
-  <section class="card">
+<Layout title="瑞典地圖 | Sweden.md" description="用空間、區域與主題篩選探索 Sweden.md 的地理入口。" lang="zh-TW" pageType="map" accent="#3f7247" accentSoft="rgba(63, 114, 71, 0.14)">
+  <section class="card atlas-cover">
     <div class="card-inner hero">
       <div>
         <p class="eyebrow">Map view</p>
@@ -17,7 +17,7 @@ const markers = JSON.stringify(mapMarkersZh);
   </section>
 
   <section class="map-layout">
-    <section class="card">
+    <section class="card atlas-sheet">
       <div class="card-inner">
         <div class="filters">
           <div>
@@ -82,7 +82,7 @@ const markers = JSON.stringify(mapMarkersZh);
       </div>
     </section>
 
-    <aside class="card">
+    <aside class="card atlas-panel">
       <div class="card-inner panel" id="map-panel">
         <p class="eyebrow">Map detail</p>
         <h2>點一個節點</h2>
@@ -189,6 +189,12 @@ const markers = JSON.stringify(mapMarkersZh);
     margin-bottom: 12px;
   }
 
+  .atlas-cover {
+    background:
+      radial-gradient(circle at 84% 18%, rgba(54, 107, 120, 0.18), transparent 24%),
+      linear-gradient(180deg, rgba(249, 252, 249, 0.98), rgba(237, 243, 238, 0.94));
+  }
+
   .lede,
   .panel-copy,
   .panel-tag {
@@ -237,8 +243,11 @@ const markers = JSON.stringify(mapMarkersZh);
     border: 1px solid var(--line);
     border-radius: 28px;
     background:
-      radial-gradient(circle at top, rgba(193, 99, 29, 0.12), transparent 30%),
-      linear-gradient(180deg, rgba(255,255,255,0.7), rgba(244,239,228,0.86));
+      linear-gradient(rgba(54, 107, 120, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(54, 107, 120, 0.08) 1px, transparent 1px),
+      radial-gradient(circle at top, rgba(63, 114, 71, 0.12), transparent 30%),
+      linear-gradient(180deg, rgba(255,255,255,0.7), rgba(235,244,237,0.9));
+    background-size: 32px 32px, 32px 32px, auto, auto;
   }
 
   #sweden-map {

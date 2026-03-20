@@ -1,0 +1,27 @@
+Sweden.md
+
+Sweden.md is a curated, bilingual, Markdown-first knowledge base about Sweden.
+It is designed for both human readers and AI systems.
+
+Primary site: https://sweden.com.tw
+Feed: https://sweden.com.tw/feed.xml
+Graph: https://sweden.com.tw/graph
+Resources: https://sweden.com.tw/resources
+Map: https://sweden.com.tw/map
+
+Key principles:
+- Curated, not encyclopedic
+- Source-based, not hand-wavy
+- Layered reading depth
+- Bilingual structure in zh-TW and English
+
+Important sections:
+- Home: /
+- English home: /en
+- About: /about
+- Contribute: /contribute
+- Changelog: /changelog
+
+Content source of truth:
+- Markdown content originates from knowledge/
+- Site content is projected into src/content/

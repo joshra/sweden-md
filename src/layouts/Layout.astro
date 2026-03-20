@@ -46,9 +46,20 @@ const baseNav = isEnglish
     ];
 const activeNav = navItems || baseNav;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const currentPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
 const themeStyle = [accent ? `--page-accent:${accent}` : "", accentSoft ? `--page-accent-soft:${accentSoft}` : ""]
   .filter(Boolean)
   .join(";");
+
+function isNavActive(href: string) {
+  const normalizedHref = href.replace(/\/+$/, "") || "/";
+  if (normalizedHref.includes("#")) {
+    const [path] = normalizedHref.split("#");
+    return (path || "/") === currentPath;
+  }
+
+  return normalizedHref === currentPath;
+}
 ---
 
 <!doctype html>
@@ -250,6 +261,12 @@ const themeStyle = [accent ? `--page-accent:${accent}` : "", accentSoft ? `--pag
         transform: translateY(-1px);
       }
 
+      nav a.active {
+        background: var(--page-accent-soft);
+        color: var(--ink);
+        border: 1px solid color-mix(in srgb, var(--page-accent) 24%, transparent);
+      }
+
       .lang-switch {
         border-left: 1px solid var(--line);
         padding-left: 10px;
@@ -411,7 +428,7 @@ const themeStyle = [accent ? `--page-accent:${accent}` : "", accentSoft ? `--pag
         </div>
         <nav>
           {activeNav.map((item) => (
-            <a href={withBase(item.href)}>{item.label}</a>
+            <a class:list={[isNavActive(item.href) && "active"]} href={withBase(item.href)}>{item.label}</a>
           ))}
           <a class="lang-switch" href={withBase(isEnglish ? "/" : "/en")}>{isEnglish ? "中文" : "EN"}</a>
         </nav>

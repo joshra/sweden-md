@@ -16,8 +16,15 @@ const regularArticles = articles.filter((article) => !article.isHub);
 const config = getCategoryConfig(category!);
 ---
 
-<Layout title={`${config?.label || category} | Sweden.md`} description={hub?.description || config?.description || ""} lang="zh-TW">
-  <section class="card hero">
+<Layout
+  title={`${config?.label || category} | Sweden.md`}
+  description={hub?.description || config?.description || ""}
+  lang="zh-TW"
+  pageType="category"
+  accent={config?.accent}
+  accentSoft={config?.accentSoft}
+>
+  <section class="card hero cover-sheet">
     <div class="card-inner hero-inner">
       <div>
         <p class="eyebrow">分類策展 / Category essay</p>
@@ -32,7 +39,7 @@ const config = getCategoryConfig(category!);
   </section>
 
   {hub && (
-    <section class="card">
+    <section class="card essay-sheet">
       <div class="card-inner prose">
         {hub.summary && <blockquote>{hub.summary}</blockquote>}
         <div set:html={hub.html} />
@@ -40,7 +47,7 @@ const config = getCategoryConfig(category!);
     </section>
   )}
 
-  <section class="card">
+  <section class="card article-band">
     <div class="card-inner">
       <div class="section-head">
         <div>
@@ -79,6 +86,12 @@ const config = getCategoryConfig(category!);
     align-items: end;
   }
 
+  .cover-sheet {
+    background:
+      radial-gradient(circle at 85% 18%, var(--page-accent-soft), transparent 24%),
+      linear-gradient(180deg, rgba(255, 252, 247, 0.98), rgba(245, 236, 226, 0.92));
+  }
+
   h1 {
     font-size: clamp(2.8rem, 5vw, 4.8rem);
     margin-bottom: 12px;
@@ -95,7 +108,8 @@ const config = getCategoryConfig(category!);
     padding: 18px 22px;
     border: 1px solid var(--line);
     border-radius: 22px;
-    background: var(--surface-strong);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(245, 237, 227, 0.92));
     text-align: center;
   }
 
@@ -151,7 +165,8 @@ const config = getCategoryConfig(category!);
     padding: 22px;
     border: 1px solid var(--line);
     border-radius: 24px;
-    background: var(--surface-strong);
+    background:
+      linear-gradient(180deg, rgba(255, 253, 249, 0.96), rgba(245, 237, 227, 0.92));
     text-decoration: none;
     transition:
       transform 180ms ease,
@@ -165,7 +180,7 @@ const config = getCategoryConfig(category!);
 
   .meta {
     margin: 0;
-    color: var(--forest);
+    color: var(--page-accent);
     font-size: 0.85rem;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -185,7 +200,7 @@ const config = getCategoryConfig(category!);
     justify-content: space-between;
     gap: 12px;
     margin-top: 8px;
-    color: var(--forest);
+    color: var(--page-accent);
     font-weight: 600;
   }
 

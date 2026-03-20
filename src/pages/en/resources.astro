@@ -27,8 +27,8 @@ const graphData = JSON.stringify(
 );
 ---
 
-<Layout title="Sweden.md Resources" description="Searchable Swedish public resources presented as a visual research surface." lang="en">
-  <section class="card">
+<Layout title="Sweden.md Resources" description="Searchable Swedish public resources presented as a visual research surface." lang="en" pageType="resources" accent="#70573d" accentSoft="rgba(112, 87, 61, 0.14)">
+  <section class="card dossier-cover">
     <div class="card-inner hero">
       <div>
         <p class="eyebrow">Reference layer</p>
@@ -44,7 +44,7 @@ const graphData = JSON.stringify(
     </div>
   </section>
 
-  <section class="card">
+  <section class="card dossier-map">
     <div class="card-inner">
       <div class="map-wrap">
         <svg id="resource-map" viewBox="-430 -430 860 860" aria-label="Sweden resource mindmap">
@@ -174,6 +174,11 @@ const graphData = JSON.stringify(
     display: grid;
     gap: 20px;
   }
+  .dossier-cover {
+    background:
+      linear-gradient(180deg, rgba(255, 252, 247, 0.98), rgba(243, 235, 225, 0.94)),
+      repeating-linear-gradient(90deg, transparent 0, transparent 56px, rgba(112, 87, 61, 0.04) 56px, rgba(112, 87, 61, 0.04) 57px);
+  }
   .hero {
     grid-template-columns: minmax(0, 1fr) 320px;
     align-items: end;
@@ -221,7 +226,8 @@ const graphData = JSON.stringify(
     padding: 18px;
     border: 1px solid var(--line);
     border-radius: 20px;
-    background: var(--surface-strong);
+    background:
+      linear-gradient(180deg, rgba(255, 253, 249, 0.98), rgba(244, 236, 226, 0.92));
     text-decoration: none;
     transition: transform 180ms ease, border-color 180ms ease;
   }

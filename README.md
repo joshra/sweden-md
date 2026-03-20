@@ -39,6 +39,7 @@ After every content or code update, rebuild the project before considering the c
 
 ```bash
 ASTRO_TELEMETRY_DISABLED=1 npm run build
+```
 
 ## Deployment
 
@@ -49,8 +50,7 @@ This repository includes a GitHub Actions workflow at `.github/workflows/deploy.
 - builds the Astro site
 - deploys the generated `dist/` output to GitHub Pages
 
-The Astro `site` setting is currently `https://sweden.md`. If you want the public site to resolve there, configure `sweden.md` as the custom domain in GitHub Pages and point DNS to GitHub Pages. Without a custom domain, the default Pages URL will be under `github.io`, and the Astro site/base settings should be adjusted accordingly.
-```
+The Astro site is configured for GitHub Pages project hosting at `https://joshra.github.io/sweden-md`. If you later move to a custom domain, update `site` and `base` in `astro.config.mjs` to match that deployment target.
 
 ## Current scope
 

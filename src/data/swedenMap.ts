@@ -1,3 +1,5 @@
+import { withBase } from "../utils/paths";
+
 export interface MapMarker {
   title: string;
   region: "north" | "central" | "south" | "far-north" | "coast";
@@ -15,7 +17,7 @@ export const mapMarkersZh: MapMarker[] = [
     category: "geography",
     x: 415,
     y: 185,
-    href: "/geography/群島與湖泊景觀",
+    href: withBase("/geography/群島與湖泊景觀"),
     description: "理解群島地景、夏屋文化與首都周邊空間想像的入口。"
   },
   {
@@ -24,7 +26,7 @@ export const mapMarkersZh: MapMarker[] = [
     category: "culture",
     x: 392,
     y: 205,
-    href: "/culture/Fika與日常生活",
+    href: withBase("/culture/Fika與日常生活"),
     description: "都市公共生活與工作節奏如何被咖啡館文化支撐。"
   },
   {
@@ -33,7 +35,7 @@ export const mapMarkersZh: MapMarker[] = [
     category: "society",
     x: 380,
     y: 240,
-    href: "/society/地方自治與市政政治",
+    href: withBase("/society/地方自治與市政政治"),
     description: "瑞典的地方政府不是行政附屬，而是福利與公共服務的第一線。"
   },
   {
@@ -42,7 +44,7 @@ export const mapMarkersZh: MapMarker[] = [
     category: "nature",
     x: 350,
     y: 360,
-    href: "/nature/森林與公共可近性",
+    href: withBase("/nature/森林與公共可近性"),
     description: "Allemansrätten 讓自然接近性成為國民生活的一部分。"
   },
   {
@@ -51,7 +53,7 @@ export const mapMarkersZh: MapMarker[] = [
     category: "economy",
     x: 368,
     y: 410,
-    href: "/economy/出口工業與全球品牌",
+    href: withBase("/economy/出口工業與全球品牌"),
     description: "中型國家如何透過工業與外向市場維持國際能見度。"
   },
   {
@@ -60,7 +62,7 @@ export const mapMarkersZh: MapMarker[] = [
     category: "culture",
     x: 340,
     y: 445,
-    href: "/culture/中夏節與季節儀式",
+    href: withBase("/culture/中夏節與季節儀式"),
     description: "長冬長夏的節奏如何塑造集體時間感。"
   },
   {
@@ -69,7 +71,7 @@ export const mapMarkersZh: MapMarker[] = [
     category: "technology",
     x: 335,
     y: 585,
-    href: "/technology/瑞典科技生態",
+    href: withBase("/technology/瑞典科技生態"),
     description: "從工程傳統到數位平台，南部城市群也是創新網絡的一部分。"
   },
   {
@@ -78,7 +80,7 @@ export const mapMarkersZh: MapMarker[] = [
     category: "art",
     x: 320,
     y: 625,
-    href: "/culture/設計文化與家居想像",
+    href: withBase("/culture/設計文化與家居想像"),
     description: "家居、公共空間與設計語言如何共同塑造瑞典風格。"
   },
   {
@@ -87,7 +89,7 @@ export const mapMarkersZh: MapMarker[] = [
     category: "nature",
     x: 420,
     y: 105,
-    href: "/nature/北極圈與薩米地景",
+    href: withBase("/nature/北極圈與薩米地景"),
     description: "最北部地景揭示了國族邊界、原住民與資源治理的張力。"
   },
   {
@@ -96,7 +98,7 @@ export const mapMarkersZh: MapMarker[] = [
     category: "history",
     x: 365,
     y: 275,
-    href: "/history/從維京到福利國",
+    href: withBase("/history/從維京到福利國"),
     description: "整張地圖背後的歷史長弧線。"
   }
 ];
@@ -108,7 +110,7 @@ export const mapMarkersEn: MapMarker[] = [
     category: "geography",
     x: 415,
     y: 185,
-    href: "/en/geography/Archipelagos-and-Lake-Landscapes",
+    href: withBase("/en/geography/Archipelagos-and-Lake-Landscapes"),
     description: "An entry point into archipelago space, summer houses, and coastal imagination."
   },
   {
@@ -117,7 +119,7 @@ export const mapMarkersEn: MapMarker[] = [
     category: "culture",
     x: 392,
     y: 205,
-    href: "/en/culture/Fika-and-Everyday-Life",
+    href: withBase("/en/culture/Fika-and-Everyday-Life"),
     description: "How cafés and pauses shape everyday rhythm in Swedish cities."
   },
   {
@@ -126,7 +128,7 @@ export const mapMarkersEn: MapMarker[] = [
     category: "society",
     x: 380,
     y: 240,
-    href: "/en/society/Local-Government-and-Municipal-Politics",
+    href: withBase("/en/society/Local-Government-and-Municipal-Politics"),
     description: "Local government is where much of Swedish public life actually operates."
   },
   {
@@ -135,7 +137,7 @@ export const mapMarkersEn: MapMarker[] = [
     category: "nature",
     x: 350,
     y: 360,
-    href: "/en/nature/Forests-and-Public-Access",
+    href: withBase("/en/nature/Forests-and-Public-Access"),
     description: "Public access rights make landscape part of social life."
   },
   {
@@ -144,7 +146,7 @@ export const mapMarkersEn: MapMarker[] = [
     category: "economy",
     x: 368,
     y: 410,
-    href: "/en/economy/Export-Industry-and-Global-Brands",
+    href: withBase("/en/economy/Export-Industry-and-Global-Brands"),
     description: "A medium-sized country sustaining visibility through outward industry."
   },
   {
@@ -153,7 +155,7 @@ export const mapMarkersEn: MapMarker[] = [
     category: "culture",
     x: 340,
     y: 445,
-    href: "/en/culture/Midsummer-and-Seasonal-Rituals",
+    href: withBase("/en/culture/Midsummer-and-Seasonal-Rituals"),
     description: "Seasonal ritual as a shared social clock."
   },
   {
@@ -162,7 +164,7 @@ export const mapMarkersEn: MapMarker[] = [
     category: "technology",
     x: 335,
     y: 585,
-    href: "/en/technology/Sweden's-Technology-Ecosystem",
+    href: withBase("/en/technology/Sweden's-Technology-Ecosystem"),
     description: "Industrial continuity and digital entrepreneurship in the south."
   },
   {
@@ -171,7 +173,7 @@ export const mapMarkersEn: MapMarker[] = [
     category: "art",
     x: 320,
     y: 625,
-    href: "/en/culture/Design-Culture-and-Domestic-Space",
+    href: withBase("/en/culture/Design-Culture-and-Domestic-Space"),
     description: "Domestic design as a public cultural language."
   },
   {
@@ -180,7 +182,7 @@ export const mapMarkersEn: MapMarker[] = [
     category: "nature",
     x: 420,
     y: 105,
-    href: "/en/nature/The-Arctic-Circle-and-Sami-Landscapes",
+    href: withBase("/en/nature/The-Arctic-Circle-and-Sami-Landscapes"),
     description: "Northern landscape, indigenous space, and resource tension."
   },
   {
@@ -189,7 +191,7 @@ export const mapMarkersEn: MapMarker[] = [
     category: "history",
     x: 365,
     y: 275,
-    href: "/en/history/From-Vikings-to-the-Welfare-State",
+    href: withBase("/en/history/From-Vikings-to-the-Welfare-State"),
     description: "The historical arc behind the whole map."
   }
 ];

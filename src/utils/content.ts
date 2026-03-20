@@ -3,6 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { marked } from "marked";
 import { categoryConfig, getCategoryConfig, isSpecialCategory } from "./categoryConfig";
+import { withBase } from "./paths";
 
 const CONTENT_ROOT = path.join(process.cwd(), "src/content");
 
@@ -75,16 +76,16 @@ function stripMarkdown(text: string) {
 }
 
 function getArticleHref(locale: "zh-TW" | "en", category: string, slug: string) {
-  return locale === "en" ? `/en/${category}/${slug}` : `/${category}/${slug}`;
+  return withBase(locale === "en" ? `/en/${category}/${slug}` : `/${category}/${slug}`);
 }
 
 function getCategoryHref(locale: "zh-TW" | "en", category: string) {
   const config = getCategoryConfig(category);
   if (config?.staticRoute) {
-    return locale === "en" ? `/en/${category}` : config.staticRoute;
+    return withBase(locale === "en" ? `/en/${category}` : config.staticRoute);
   }
 
-  return locale === "en" ? `/en/${category}` : `/${category}`;
+  return withBase(locale === "en" ? `/en/${category}` : `/${category}`);
 }
 
 function getTitleLookup(locale: "zh-TW" | "en") {

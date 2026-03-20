@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { withBase } from "../../utils/paths";
 
 const paths = [
   {
@@ -29,7 +30,7 @@ const paths = [
         <p class="lede">Following `taiwan.md`, Sweden.md should make it obvious how new contributors can enter, whether through essays, source curation, or frontend work.</p>
       </div>
       <div class="button-row">
-        <a class="button" href="/en/about">Read the editorial method</a>
+        <a class="button" href={withBase("/en/about")}>Read the editorial method</a>
         <a class="button secondary" href="https://github.com/frank890417/taiwan-md" target="_blank" rel="noreferrer">See taiwan-md</a>
       </div>
     </div>

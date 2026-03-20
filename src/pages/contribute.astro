@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { withBase } from "../utils/paths";
 
 const paths = [
   {
@@ -29,7 +30,7 @@ const paths = [
         <p class="lede">參照 `taiwan.md`，Sweden.md 需要清楚告訴新參與者可以從哪裡開始，不論是內容、資料還是前端體驗。</p>
       </div>
       <div class="button-row">
-        <a class="button" href="/about">先讀編輯方法</a>
+        <a class="button" href={withBase("/about")}>先讀編輯方法</a>
         <a class="button secondary" href="https://github.com/frank890417/taiwan-md" target="_blank" rel="noreferrer">參考 taiwan-md 倉庫</a>
       </div>
     </div>

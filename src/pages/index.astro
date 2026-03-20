@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { getCategories, getFeaturedArticles, getSiteMetrics } from "../utils/content";
+import { withBase } from "../utils/paths";
 
 const categories = getCategories("zh-TW");
 const primaryCategories = categories.filter((category) => !["about", "resources"].includes(category.slug));
@@ -11,10 +12,10 @@ const quickLinks = [
   ...utilityCategories.map((category) => ({
     eyebrow: `${category.emoji} ${category.title}`,
     title: category.description,
-    href: category.href
+    href: withBase(category.slug === "about" ? "/about" : "/resources")
   })),
-  { eyebrow: "✋ 貢獻", title: "想補內容、前端或資料入口，從這裡開始。", href: "/contribute" },
-  { eyebrow: "🕒 更新", title: "追蹤最近新增與最近被擴寫的文章。", href: "/changelog" }
+  { eyebrow: "✋ 貢獻", title: "想補內容、前端或資料入口，從這裡開始。", href: withBase("/contribute") },
+  { eyebrow: "🕒 更新", title: "追蹤最近新增與最近被擴寫的文章。", href: withBase("/changelog") }
 ];
 ---
 
@@ -31,7 +32,7 @@ const quickLinks = [
         <div class="button-row">
           <a class="button" href="#featured">從 5 篇開始</a>
           <a class="button secondary" href="#categories">瀏覽全部分類</a>
-          <a class="button secondary" href="/graph">知識圖譜</a>
+          <a class="button secondary" href={withBase("/graph")}>知識圖譜</a>
         </div>
       </div>
 

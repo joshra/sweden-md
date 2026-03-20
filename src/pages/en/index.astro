@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getCategories, getFeaturedArticles, getSiteMetrics } from "../../utils/content";
+import { withBase } from "../../utils/paths";
 
 const categories = getCategories("en");
 const primaryCategories = categories.filter((category) => !["about", "resources"].includes(category.slug));
@@ -11,10 +12,10 @@ const quickLinks = [
   ...utilityCategories.map((category) => ({
     eyebrow: `${category.emoji} ${category.title}`,
     title: category.description,
-    href: category.href
+    href: withBase(category.slug === "about" ? "/en/about" : "/en/resources")
   })),
-  { eyebrow: "✋ Contribute", title: "Start here if you want to add content, frontend work, or resource curation.", href: "/en/contribute" },
-  { eyebrow: "🕒 Changelog", title: "Follow the latest additions and expansions across the site.", href: "/en/changelog" }
+  { eyebrow: "✋ Contribute", title: "Start here if you want to add content, frontend work, or resource curation.", href: withBase("/en/contribute") },
+  { eyebrow: "🕒 Changelog", title: "Follow the latest additions and expansions across the site.", href: withBase("/en/changelog") }
 ];
 ---
 
@@ -34,7 +35,7 @@ const quickLinks = [
         <div class="button-row">
           <a class="button" href="#featured">Start with 5 essays</a>
           <a class="button secondary" href="#categories">Browse categories</a>
-          <a class="button secondary" href="/en/graph">Knowledge graph</a>
+          <a class="button secondary" href={withBase("/en/graph")}>Knowledge graph</a>
         </div>
       </div>
 

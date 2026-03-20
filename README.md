@@ -50,7 +50,7 @@ This repository includes a GitHub Actions workflow at `.github/workflows/deploy.
 - builds the Astro site
 - deploys the generated `dist/` output to GitHub Pages
 
-The Astro site is configured for GitHub Pages project hosting at `https://joshra.github.io/sweden-md`. If you later move to a custom domain, update `site` and `base` in `astro.config.mjs` to match that deployment target.
+The Astro site is configured for the custom domain `https://sweden.com.tw`. The deployment output also includes `public/CNAME` so GitHub Pages can keep the custom domain attached during deploys.
 
 ## Current scope
 

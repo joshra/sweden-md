@@ -23,21 +23,21 @@ const trendingTopics = [...primaryCategories].sort((a, b) => b.articleCount - a.
 const featuredSeries = [
   {
     eyebrow: "國家底圖",
-    title: "先理解歷史、制度與地理，瑞典才不會只剩北歐印象。",
+    title: "先掌握歷史、制度與地理，才能讀懂今天的瑞典。",
     href: withBase("/history"),
-    note: "從王國形成、福利國到區域差異，先抓國家的骨架。"
+    note: "從國家形成、福利國到區域差異，先建立理解瑞典的基本座標。"
   },
   {
     eyebrow: "日常文化",
-    title: "從 fika、家庭節奏與季節儀式，看價值觀如何落進生活。",
+    title: "從 fika、家庭節奏與季節儀式，看價值觀怎麼變成日常。",
     href: withBase("/culture"),
-    note: "把抽象的瑞典想像，拆回可感知的日常實踐。"
+    note: "把抽象印象拆回生活現場，理解瑞典人如何工作、相處與過節。"
   },
   {
     eyebrow: "城市與產業",
-    title: "從城市、科技到經濟結構，補上瑞典的現代動能。",
+    title: "從城市、科技到經濟結構，補上瑞典的現代運作方式。",
     href: withBase("/cities"),
-    note: "看見首都之外的區域節點，也看見產業與人才如何流動。"
+    note: "看見首都之外的區域節點，也看見產業、人才與基礎建設如何流動。"
   }
 ];
 
@@ -47,6 +47,12 @@ const utilityLinks = [
   { eyebrow: "ℹ️ 關於", title: "理解 Sweden.md 的編輯方向與內容方法。", href: withBase("/about") },
   { eyebrow: "🕒 更新", title: "追蹤最近新增與最近擴寫的文章。", href: withBase("/changelog") },
   { eyebrow: "✋ 貢獻", title: "想補內容、前端或資料入口，從這裡開始。", href: withBase("/contribute") }
+];
+
+const audienceUseCases = [
+  "想快速建立對瑞典的整體理解，而不是只停留在北歐印象。",
+  "需要可靠且可追溯的內容入口，拿來做研究、教學、寫作或產品背景整理。",
+  "想從單一主題一路延伸到制度、城市、文化與產業脈絡。"
 ];
 ---
 
@@ -59,20 +65,20 @@ const utilityLinks = [
   <section class="card hero">
     <div class="card-inner hero-grid">
       <div>
-        <p class="eyebrow">Curated knowledge base for Sweden</p>
-        <h1>首頁應該先把人帶進內容，不是先介紹站怎麼做。</h1>
+        <p class="eyebrow">Sweden.md | 給台灣讀者的瑞典知識入口</p>
+        <h1>用一個更完整的方式理解瑞典。</h1>
         <p class="lede">
-          Sweden.md 的第一屏現在改成讀者入口：先搜尋、再看熱門主題、編輯精選與最新整理，讓第一次進站的人能直接找到值得讀的內容。
+          這裡不是旅遊清單，也不是零散百科。Sweden.md 以策展式結構整理瑞典的歷史、社會、文化、城市與技術，讓第一次進站的讀者能快速找到可信、可讀、也有脈絡的內容。
         </p>
 
         <div class="button-row">
-          <a class="button" href="#search">站內搜尋</a>
-          <a class="button secondary" href="#featured">編輯精選</a>
-          <a class="button secondary" href="#latest">最新整理</a>
+          <a class="button" href="#featured">開始閱讀</a>
+          <a class="button secondary" href="#search">站內搜尋</a>
+          <a class="button secondary" href="#latest">最新更新</a>
         </div>
 
         <form id="search" class="search-panel" action={withBase("/graph")}>
-          <label class="search-label" for="home-search">搜尋文章、分類或主題</label>
+          <label class="search-label" for="home-search">搜尋文章、分類、城市或關鍵主題</label>
           <input id="home-search" type="search" name="q" placeholder="例如：福利國、Fika、斯德哥爾摩、Spotify" autocomplete="off" />
           <div id="search-results" class="search-results" aria-live="polite">
             {searchIndex.slice(0, 6).map((article) => (
@@ -90,27 +96,29 @@ const utilityLinks = [
         <div class="stat-grid">
           <article>
             <strong>{metrics.articleCount}+</strong>
-            <span>主題文章</span>
+            <span>篇主題文章</span>
           </article>
           <article>
             <strong>{metrics.categoryCount}</strong>
-            <span>核心分類</span>
+            <span>個核心分類</span>
           </article>
           <article>
             <strong>{featuredArticles.length}</strong>
-            <span>起手精選</span>
+            <span>篇起手精選</span>
           </article>
           <article>
             <strong>{latestArticles.length}</strong>
-            <span>近期整理</span>
+            <span>則近期更新</span>
           </article>
         </div>
 
         <div class="signal">
-          <p class="signal-label">首頁邏輯</p>
-          <p>
-            這裡先回答「我現在該點什麼」，再把圖譜、地圖、資源與站務降到第二層。對內容站來說，這才是比較接近流量與閱讀意圖的排序。
-          </p>
+          <p class="signal-label">這裡適合誰</p>
+          <ul class="audience-list">
+            {audienceUseCases.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
@@ -124,7 +132,7 @@ const utilityLinks = [
             <p class="eyebrow">Trending topics</p>
             <h2>熱門主題</h2>
           </div>
-          <p class="section-note">以現有內容密度作為入口代理，先看大家最容易一路讀下去的區塊。</p>
+          <p class="section-note">從目前內容最完整的區塊開始，先進入一條能持續延伸的閱讀路徑。</p>
         </div>
 
         <div class="topic-cluster">
@@ -145,7 +153,7 @@ const utilityLinks = [
             <p class="eyebrow">Series</p>
             <h2>系列入口</h2>
           </div>
-          <p class="section-note">不要只跳單篇，先從一條敘事線進站。</p>
+          <p class="section-note">如果你不確定從哪裡開始，先沿著一條清楚的敘事線進站。</p>
         </div>
 
         <div class="series-list">
@@ -168,7 +176,7 @@ const utilityLinks = [
           <p class="eyebrow">Editor's picks</p>
           <h2>編輯精選</h2>
         </div>
-        <p class="section-note">這不是按分類排版，而是替第一次進站的人先排好五篇起手式。</p>
+        <p class="section-note">這五篇不是隨機抽樣，而是幫第一次進站的讀者先排好的理解順序。</p>
       </div>
 
       <div class="feature-grid">
@@ -194,7 +202,7 @@ const utilityLinks = [
           <p class="eyebrow">Latest</p>
           <h2>最新整理</h2>
         </div>
-        <p class="section-note">目前沒有真實流量資料，所以這裡用最近更新時間做可辯護的「最新內容」入口。</p>
+        <p class="section-note">追蹤最近新增與擴寫的內容，快速掌握這個知識庫近期補強了哪些主題。</p>
       </div>
 
       <div class="latest-grid">
@@ -217,7 +225,7 @@ const utilityLinks = [
           <p class="eyebrow">Explore</p>
           <h2>全部主題入口</h2>
         </div>
-        <p class="section-note">保留完整分類，但不再讓它們壓過搜尋、熱門與精選。</p>
+        <p class="section-note">完整分類仍然保留，方便你按主題建立自己的閱讀地圖。</p>
       </div>
 
       <div class="category-grid">
@@ -241,7 +249,7 @@ const utilityLinks = [
         <p class="eyebrow">Tools and site</p>
         <h2>工具與站務</h2>
       </div>
-      <p class="section-note">這些仍然重要，但不該比內容入口更先被看到。</p>
+      <p class="section-note">當你要查資料來源、理解站點方法，或用不同介面瀏覽內容時，再從這裡往下走。</p>
     </div>
 
     <div class="utility-grid">
@@ -409,6 +417,14 @@ const utilityLinks = [
   .search-results {
     display: grid;
     gap: 10px;
+  }
+
+  .audience-list {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 10px;
+    color: var(--muted);
   }
 
   .search-result {

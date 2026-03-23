@@ -23,21 +23,21 @@ const trendingTopics = [...primaryCategories].sort((a, b) => b.articleCount - a.
 const featuredSeries = [
   {
     eyebrow: "State and history",
-    title: "Start with institutional history before Sweden collapses into stereotype.",
+    title: "Start with history, institutions, and geography before Sweden collapses into stereotype.",
     href: withBase("/en/history"),
-    note: "Build a frame through state formation, welfare, and regional difference."
+    note: "Build a working frame through state formation, welfare development, and regional difference."
   },
   {
     eyebrow: "Daily life",
     title: "Enter through fika, family rhythms, and seasonal rituals.",
     href: withBase("/en/culture"),
-    note: "A route for readers who want values translated into lived practice."
+    note: "A route for readers who want abstract values translated into lived practice."
   },
   {
     eyebrow: "Cities and industry",
     title: "Move from urban nodes into technology, labor, and modern economic life.",
     href: withBase("/en/cities"),
-    note: "A more contemporary path through Sweden's spatial and industrial structure."
+    note: "A contemporary path through Sweden's spatial structure, talent flows, and industrial base."
   }
 ];
 
@@ -47,6 +47,12 @@ const utilityLinks = [
   { eyebrow: "ℹ️ About", title: "Read the editorial framing and project method.", href: withBase("/en/about") },
   { eyebrow: "🕒 Changelog", title: "Track newly added and expanded articles.", href: withBase("/en/changelog") },
   { eyebrow: "✋ Contribute", title: "Start here if you want to improve content or frontend structure.", href: withBase("/en/contribute") }
+];
+
+const audienceUseCases = [
+  "Readers who want a coherent understanding of Sweden rather than a stack of Nordic stereotypes.",
+  "People who need a reliable, source-aware entry point for research, teaching, writing, or product context.",
+  "Anyone who wants to move from a single topic into the wider institutional, cultural, urban, and economic picture."
 ];
 ---
 
@@ -59,20 +65,20 @@ const utilityLinks = [
   <section class="card hero cover-panel">
     <div class="card-inner hero-grid">
       <div>
-        <p class="eyebrow">Curated knowledge base for Sweden</p>
-        <h1>The homepage should route readers into content, not into site admin.</h1>
+        <p class="eyebrow">Sweden.md | A curated knowledge entry point to Sweden</p>
+        <h1>Understand Sweden with more structure and less stereotype.</h1>
         <p class="lede">
-          The landing surface now prioritizes search, trending topics, editorial picks, and recent updates, so first-time readers can find something worth reading immediately.
+          Sweden.md is not a travel notebook or a loose encyclopedia. It organizes Sweden's history, society, culture, cities, and technology into a readable, sourced, editorially framed knowledge base for first-time and returning readers.
         </p>
 
         <div class="button-row">
-          <a class="button" href="#search">Search the site</a>
-          <a class="button secondary" href="#featured">Editor's picks</a>
+          <a class="button" href="#featured">Start reading</a>
+          <a class="button secondary" href="#search">Search the site</a>
           <a class="button secondary" href="#latest">Latest updates</a>
         </div>
 
         <form id="search" class="search-panel" action={withBase("/en/graph")}>
-          <label class="search-label" for="home-search">Search essays, categories, or topics</label>
+          <label class="search-label" for="home-search">Search essays, categories, cities, or key topics</label>
           <input id="home-search" type="search" name="q" placeholder="For example: welfare, fika, Stockholm, Spotify" autocomplete="off" />
           <div id="search-results" class="search-results" aria-live="polite">
             {searchIndex.slice(0, 6).map((article) => (
@@ -90,7 +96,7 @@ const utilityLinks = [
         <div class="stat-grid">
           <article>
             <strong>{metrics.articleCount}+</strong>
-            <span>Articles</span>
+            <span>Topic essays</span>
           </article>
           <article>
             <strong>{metrics.categoryCount}</strong>
@@ -107,10 +113,12 @@ const utilityLinks = [
         </div>
 
         <div class="signal">
-          <p class="signal-label">Navigation logic</p>
-          <p>
-            Tools such as graph, map, resources, and about still matter, but they now sit behind the main reading paths instead of occupying the first layer of attention.
-          </p>
+          <p class="signal-label">Who this is for</p>
+          <ul class="audience-list">
+            {audienceUseCases.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
@@ -124,7 +132,7 @@ const utilityLinks = [
             <p class="eyebrow">Trending topics</p>
             <h2>High-density themes</h2>
           </div>
-          <p class="section-note">Using category depth as an honest proxy for where readers can keep going.</p>
+          <p class="section-note">Start where the library is already deepest, so one article can lead naturally into the next.</p>
         </div>
 
         <div class="topic-cluster">
@@ -145,7 +153,7 @@ const utilityLinks = [
             <p class="eyebrow">Series</p>
             <h2>Editorial entry paths</h2>
           </div>
-          <p class="section-note">Enter through a reading path, not a random single page.</p>
+          <p class="section-note">If you are unsure where to begin, start with a path rather than a random page.</p>
         </div>
 
         <div class="series-list">
@@ -168,7 +176,7 @@ const utilityLinks = [
           <p class="eyebrow">Editor's picks</p>
           <h2>Five essays to orient a first visit.</h2>
         </div>
-        <p class="section-note">Curated as a starting route rather than a flat category sample.</p>
+        <p class="section-note">These are not a random sample. They are a deliberate starting sequence for a first visit.</p>
       </div>
 
       <div class="feature-grid">
@@ -194,7 +202,7 @@ const utilityLinks = [
           <p class="eyebrow">Latest</p>
           <h2>Recently updated</h2>
         </div>
-        <p class="section-note">There is no live analytics layer yet, so this uses file update time as a defensible freshness signal.</p>
+        <p class="section-note">Track the newest additions and major revisions to see which parts of the knowledge base are expanding now.</p>
       </div>
 
       <div class="latest-grid">
@@ -217,7 +225,7 @@ const utilityLinks = [
           <p class="eyebrow">Explore</p>
           <h2>All category entry points</h2>
         </div>
-        <p class="section-note">The full taxonomy stays visible, but it no longer outranks search and editorial discovery.</p>
+        <p class="section-note">The full taxonomy stays available for readers who prefer to build their own map of the site.</p>
       </div>
 
       <div class="category-grid">
@@ -431,6 +439,14 @@ const utilityLinks = [
   .search-results {
     display: grid;
     gap: 10px;
+  }
+
+  .audience-list {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 10px;
+    color: var(--muted);
   }
 
   .search-result {

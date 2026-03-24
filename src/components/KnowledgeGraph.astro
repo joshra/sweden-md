@@ -1,0 +1,761 @@
+---
+import { buildKnowledgeGraph } from "../utils/graph";
+
+interface Props {
+  locale: "zh-TW" | "en";
+  initialQuery?: string;
+}
+
+const { locale, initialQuery = "" } = Astro.props;
+const isEnglish = locale === "en";
+const graph = buildKnowledgeGraph(locale);
+const graphData = JSON.stringify(graph);
+
+const copy = isEnglish
+  ? {
+      eyebrow: "Knowledge graph",
+      title: "No article stands alone.",
+      lede:
+        "Use article-to-article links, category clusters, and search to move through Sweden.md as a network rather than a flat archive.",
+      searchPlaceholder: "Search categories, essays, or themes...",
+      countAll: "Showing the full graph",
+      reset: "Reset",
+      filtersLabel: "Quick focus",
+      panelEyebrow: "Node detail",
+      panelTitle: "Start with a cluster or article",
+      panelBody:
+        "Search for a theme, then inspect how categories and essays connect. The side panel updates with context, neighbors, and a direct link.",
+      panelMeta: "Knowledge graph panel",
+      open: "Open page",
+      related: "Connected nodes",
+      more: "more",
+      statsCategories: "categories",
+      statsArticles: "articles",
+      statsLinks: "cross-links",
+      typeCategory: "Category",
+      typeArticle: "Article",
+      countResults: "results",
+      countFocus: "Focused view",
+      countNone: "No matches",
+      relatedCountSingle: "connection",
+      relatedCountPlural: "connections",
+      articleCountSingle: "article",
+      articleCountPlural: "articles",
+      centerSublabel: "Knowledge"
+    }
+  : {
+      eyebrow: "Knowledge graph",
+      title: "每篇文章都不是孤島。",
+      lede:
+        "把文章之間的 wikilink、分類群落與搜尋結合起來，改用真正的內容網路閱讀 Sweden.md，而不是平面清單。",
+      searchPlaceholder: "搜尋分類、文章或主題...",
+      countAll: "顯示完整圖譜",
+      reset: "重設",
+      filtersLabel: "快速聚焦",
+      panelEyebrow: "節點說明",
+      panelTitle: "先選一個分類或主題",
+      panelBody:
+        "你可以先搜尋關鍵字，再看它連到哪些文章與分類。右側面板會同步顯示內容摘要、相鄰節點與直接入口。",
+      panelMeta: "圖譜資訊面板",
+      open: "開啟頁面",
+      related: "相連節點",
+      more: "更多",
+      statsCategories: "分類",
+      statsArticles: "文章",
+      statsLinks: "交叉連結",
+      typeCategory: "分類",
+      typeArticle: "文章",
+      countResults: "個結果",
+      countFocus: "聚焦檢視",
+      countNone: "沒有符合結果",
+      relatedCountSingle: "個連結",
+      relatedCountPlural: "個連結",
+      articleCountSingle: "篇文章",
+      articleCountPlural: "篇文章",
+      centerSublabel: "Knowledge"
+    };
+
+const categoryNodes = graph.nodes.filter((node) => node.type === "category");
+const articleNodes = graph.nodes.filter((node) => node.type === "article");
+---
+
+<section class="card graph-shell">
+  <div class="card-inner graph-header">
+    <div>
+      <p class="eyebrow">{copy.eyebrow}</p>
+      <h1>{copy.title}</h1>
+      <p class="lede">{copy.lede}</p>
+      <div class="graph-stats" aria-label="Graph statistics">
+        <span><strong>{graph.stats.categoryCount}</strong> {copy.statsCategories}</span>
+        <span><strong>{graph.stats.articleCount}</strong> {copy.statsArticles}</span>
+        <span><strong>{graph.stats.relatedEdgeCount}</strong> {copy.statsLinks}</span>
+      </div>
+    </div>
+    <div class="controls">
+      <label class="sr-only" for={`graph-search-${locale}`}>{copy.searchPlaceholder}</label>
+      <div class="search-row">
+        <input id={`graph-search-${locale}`} type="search" placeholder={copy.searchPlaceholder} value={initialQuery} autocomplete="off" />
+        <button type="button" id={`graph-reset-${locale}`} class="ghost-button">{copy.reset}</button>
+      </div>
+      <p id={`graph-count-${locale}`} class="graph-count">{copy.countAll}</p>
+      <div class="chip-row" aria-label={copy.filtersLabel}>
+        {categoryNodes.map((category) => (
+          <button
+            type="button"
+            class="chip-button"
+            data-focus-id={category.id}
+            style={`--chip-accent:${category.color};`}
+          >
+            {category.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="graph-layout">
+    <div class="graph-frame">
+      <svg
+        id={`graph-svg-${locale}`}
+        viewBox="0 0 1240 840"
+        aria-label={isEnglish ? "Sweden knowledge graph" : "Sweden 知識圖譜"}
+      >
+        <g class="graph-center">
+          {categoryNodes.map((category) => (
+            <line
+              class="center-edge"
+              x1={graph.center.x}
+              y1={graph.center.y}
+              x2={category.x}
+              y2={category.y}
+              stroke={category.color}
+            />
+          ))}
+
+          {graph.edges
+            .filter((edge) => edge.type === "related")
+            .map((edge) => {
+              const source = graph.nodes.find((node) => node.id === edge.source)!;
+              const target = graph.nodes.find((node) => node.id === edge.target)!;
+              return (
+                <line
+                  class="graph-edge related-edge"
+                  data-source={edge.source}
+                  data-target={edge.target}
+                  data-weight={edge.weight}
+                  x1={source.x}
+                  y1={source.y}
+                  x2={target.x}
+                  y2={target.y}
+                  stroke={source.color}
+                />
+              );
+            })}
+
+          {graph.edges
+            .filter((edge) => edge.type === "category")
+            .map((edge) => {
+              const source = graph.nodes.find((node) => node.id === edge.source)!;
+              const target = graph.nodes.find((node) => node.id === edge.target)!;
+              return (
+                <line
+                  class="graph-edge category-edge"
+                  data-source={edge.source}
+                  data-target={edge.target}
+                  x1={source.x}
+                  y1={source.y}
+                  x2={target.x}
+                  y2={target.y}
+                  stroke={target.color}
+                />
+              );
+            })}
+
+          <circle cx={graph.center.x} cy={graph.center.y} r="80" fill="#1f2b22" />
+          <text x={graph.center.x} y={graph.center.y - 10} text-anchor="middle" class="center-label">
+            {graph.center.label}
+          </text>
+          <text x={graph.center.x} y={graph.center.y + 22} text-anchor="middle" class="center-sublabel">
+            {copy.centerSublabel}
+          </text>
+
+          {graph.nodes.map((node) => (
+            <g
+              class:list={["graph-node", node.type === "category" ? "category-node" : "article-node"]}
+              data-id={node.id}
+              data-type={node.type}
+              data-category={node.categoryId}
+              data-label={node.searchLabel}
+              tabindex="0"
+              role="button"
+              aria-label={`${node.type === "category" ? copy.typeCategory : copy.typeArticle}: ${node.label}`}
+            >
+              <circle cx={node.x} cy={node.y} r={node.type === "category" ? 18 : 8} fill={node.color} />
+              <circle cx={node.x} cy={node.y} r={node.type === "category" ? 24 : 16} class="node-ring" />
+              <text x={node.x} y={node.y + (node.type === "category" ? 40 : 24)} text-anchor="middle" class="node-label">
+                {node.label}
+              </text>
+            </g>
+          ))}
+        </g>
+      </svg>
+    </div>
+
+    <aside class="graph-panel" id={`graph-panel-${locale}`} aria-live="polite">
+      <p class="eyebrow">{copy.panelEyebrow}</p>
+      <h2 id={`graph-panel-title-${locale}`}>{copy.panelTitle}</h2>
+      <p id={`graph-panel-body-${locale}`} class="panel-body">{copy.panelBody}</p>
+      <p id={`graph-panel-meta-${locale}`} class="panel-meta">{copy.panelMeta}</p>
+      <a id={`graph-panel-link-${locale}`} class="panel-link" href="#" hidden>{copy.open}</a>
+      <div id={`graph-panel-related-${locale}`} class="related-list" hidden></div>
+    </aside>
+  </div>
+</section>
+
+<script define:vars={{ graphData, locale, copy, initialQuery }}>
+  const graph = JSON.parse(graphData);
+  const nodeById = new Map(graph.nodes.map((node) => [node.id, node]));
+  const adjacency = new Map(graph.nodes.map((node) => [node.id, new Set()]));
+
+  for (const edge of graph.edges) {
+    adjacency.get(edge.source)?.add(edge.target);
+    adjacency.get(edge.target)?.add(edge.source);
+  }
+
+  for (const node of graph.nodes) {
+    if (node.type === "article" && node.categoryId) {
+      adjacency.get(node.id)?.add(`category:${node.categoryId}`);
+      adjacency.get(`category:${node.categoryId}`)?.add(node.id);
+    }
+  }
+
+  const input = document.getElementById(`graph-search-${locale}`);
+  const count = document.getElementById(`graph-count-${locale}`);
+  const reset = document.getElementById(`graph-reset-${locale}`);
+  const panelTitle = document.getElementById(`graph-panel-title-${locale}`);
+  const panelBody = document.getElementById(`graph-panel-body-${locale}`);
+  const panelMeta = document.getElementById(`graph-panel-meta-${locale}`);
+  const panelLink = document.getElementById(`graph-panel-link-${locale}`);
+  const relatedBox = document.getElementById(`graph-panel-related-${locale}`);
+  const nodes = [...document.querySelectorAll(`#graph-svg-${locale} .graph-node`)];
+  const edges = [...document.querySelectorAll(`#graph-svg-${locale} .graph-edge`)];
+  const focusButtons = [...document.querySelectorAll(`[data-focus-id]`)];
+
+  let activeId = null;
+
+  function pluralize(value, single, plural) {
+    return locale === "en" && value === 1 ? `${value} ${single}` : `${value} ${plural}`;
+  }
+
+  function updateQueryParam(query) {
+    const url = new URL(window.location.href);
+    if (query) {
+      url.searchParams.set("q", query);
+    } else {
+      url.searchParams.delete("q");
+    }
+    window.history.replaceState({}, "", url);
+  }
+
+  function getMatchIds(query) {
+    if (!query) {
+      return new Set();
+    }
+
+    return new Set(
+      graph.nodes.filter((node) => node.searchLabel.includes(query)).map((node) => node.id)
+    );
+  }
+
+  function getVisibleIds(query, matchIds) {
+    if (!query && !activeId) {
+      return new Set(graph.nodes.map((node) => node.id));
+    }
+
+    const visible = new Set();
+    const seeds = new Set(matchIds);
+    if (activeId) {
+      seeds.add(activeId);
+    }
+
+    for (const seed of seeds) {
+      visible.add(seed);
+      const node = nodeById.get(seed);
+      if (node?.categoryId) {
+        visible.add(`category:${node.categoryId}`);
+      }
+      adjacency.get(seed)?.forEach((id) => visible.add(id));
+    }
+
+    return visible;
+  }
+
+  function pickPanelNode(query, matchIds) {
+    if (activeId && nodeById.has(activeId)) {
+      return nodeById.get(activeId);
+    }
+
+    if (matchIds.size > 0) {
+      const [first] = [...matchIds];
+      return nodeById.get(first);
+    }
+
+    return null;
+  }
+
+  function renderPanel(node) {
+    if (!node) {
+      panelTitle.textContent = copy.panelTitle;
+      panelBody.textContent = copy.panelBody;
+      panelMeta.textContent = copy.panelMeta;
+      panelLink.hidden = true;
+      panelLink.removeAttribute("href");
+      relatedBox.hidden = true;
+      relatedBox.innerHTML = "";
+      return;
+    }
+
+    const neighborIds = [...(adjacency.get(node.id) || [])].filter((id) => id !== node.id);
+    const neighbors = neighborIds
+      .map((id) => nodeById.get(id))
+      .filter(Boolean)
+      .sort((a, b) => {
+        if (a.type !== b.type) return a.type === "category" ? -1 : 1;
+        return a.label.localeCompare(b.label);
+      });
+
+    panelTitle.textContent = node.label;
+    panelBody.textContent = node.summary || node.description || copy.panelBody;
+
+    const metaParts = [node.type === "category" ? copy.typeCategory : copy.typeArticle];
+    if (node.categoryLabel && node.type === "article") {
+      metaParts.push(node.categoryLabel);
+    }
+    if (node.type === "category" && node.articleCount) {
+      metaParts.push(pluralize(node.articleCount, copy.articleCountSingle, copy.articleCountPlural));
+    }
+    metaParts.push(pluralize(neighbors.length, copy.relatedCountSingle, copy.relatedCountPlural));
+    panelMeta.textContent = metaParts.join(" · ");
+
+    panelLink.hidden = false;
+    panelLink.href = node.href;
+
+    if (!neighbors.length) {
+      relatedBox.hidden = true;
+      relatedBox.innerHTML = "";
+      return;
+    }
+
+    const preview = neighbors.slice(0, 6);
+    const extraCount = neighbors.length - preview.length;
+    relatedBox.hidden = false;
+    relatedBox.innerHTML = `
+      <p class="related-title">${copy.related}</p>
+      <div class="related-items">
+        ${preview
+          .map(
+            (item) => `
+              <button type="button" class="related-chip" data-related-id="${item.id}">
+                ${item.label}
+              </button>
+            `
+          )
+          .join("")}
+        ${
+          extraCount > 0
+            ? `<span class="related-more">+${extraCount} ${copy.more}</span>`
+            : ""
+        }
+      </div>
+    `;
+
+    [...relatedBox.querySelectorAll("[data-related-id]")].forEach((button) => {
+      button.addEventListener("click", () => {
+        activeId = button.dataset.relatedId;
+        applyState();
+      });
+    });
+  }
+
+  function applyState() {
+    const query = input.value.trim().toLowerCase();
+    const matchIds = getMatchIds(query);
+    const visibleIds = getVisibleIds(query, matchIds);
+    const panelNode = pickPanelNode(query, matchIds);
+
+    nodes.forEach((element) => {
+      const id = element.dataset.id;
+      const isVisible = visibleIds.has(id);
+      const isActive = activeId === id;
+      const isMatch = matchIds.has(id);
+      const isNeighbor = activeId ? adjacency.get(activeId)?.has(id) : false;
+
+      element.classList.toggle("is-hidden", !isVisible);
+      element.classList.toggle("is-active", Boolean(isActive));
+      element.classList.toggle("is-match", Boolean(isMatch));
+      element.classList.toggle("is-neighbor", Boolean(isNeighbor) && !isActive);
+    });
+
+    edges.forEach((element) => {
+      const source = element.dataset.source;
+      const target = element.dataset.target;
+      const edgeVisible = visibleIds.has(source) && visibleIds.has(target);
+      const edgeActive = activeId && (source === activeId || target === activeId);
+      element.classList.toggle("is-hidden", !edgeVisible);
+      element.classList.toggle("is-active", Boolean(edgeActive));
+    });
+
+    focusButtons.forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.focusId === activeId);
+    });
+
+    if (!query && !activeId) {
+      count.textContent = copy.countAll;
+    } else if (query && matchIds.size === 0) {
+      count.textContent = copy.countNone;
+    } else if (query) {
+      count.textContent = `${matchIds.size} ${copy.countResults}`;
+    } else {
+      count.textContent = copy.countFocus;
+    }
+
+    renderPanel(panelNode);
+    updateQueryParam(query);
+  }
+
+  nodes.forEach((element) => {
+    const activate = () => {
+      activeId = element.dataset.id;
+      applyState();
+    };
+
+    element.addEventListener("click", activate);
+    element.addEventListener("mouseenter", activate);
+    element.addEventListener("focus", activate);
+    element.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        activate();
+      }
+    });
+  });
+
+  focusButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      activeId = button.dataset.focusId === activeId ? null : button.dataset.focusId;
+      applyState();
+    });
+  });
+
+  reset.addEventListener("click", () => {
+    activeId = null;
+    input.value = "";
+    applyState();
+  });
+
+  input.addEventListener("input", () => {
+    if (activeId && input.value.trim()) {
+      activeId = null;
+    }
+    applyState();
+  });
+
+  if (initialQuery) {
+    input.value = initialQuery;
+  }
+
+  applyState();
+</script>
+
+<style>
+  .graph-shell {
+    min-height: calc(100vh - 180px);
+  }
+
+  .graph-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+    gap: 22px;
+    align-items: end;
+    border-bottom: 1px solid var(--line);
+  }
+
+  h1 {
+    font-size: clamp(2.6rem, 5vw, 4.6rem);
+    margin-bottom: 12px;
+  }
+
+  .lede,
+  .graph-count,
+  .panel-body,
+  .panel-meta,
+  .related-more {
+    color: var(--muted);
+  }
+
+  .graph-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .graph-stats span {
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .controls {
+    display: grid;
+    gap: 12px;
+  }
+
+  .search-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+
+  input[type="search"] {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--surface-strong);
+    font: inherit;
+    color: var(--ink);
+  }
+
+  .ghost-button,
+  .chip-button,
+  .related-chip,
+  .panel-link {
+    border-radius: 999px;
+    font: inherit;
+  }
+
+  .ghost-button,
+  .chip-button,
+  .related-chip {
+    border: 1px solid var(--line);
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+  }
+
+  .ghost-button {
+    padding: 0 16px;
+  }
+
+  .chip-row,
+  .related-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip-button {
+    padding: 8px 12px;
+  }
+
+  .chip-button.is-active {
+    border-color: var(--chip-accent);
+    box-shadow: inset 0 0 0 1px var(--chip-accent);
+    background: color-mix(in srgb, var(--chip-accent) 18%, transparent);
+  }
+
+  .graph-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .graph-frame {
+    overflow: auto;
+    border-right: 1px solid var(--line);
+    padding-right: 12px;
+  }
+
+  svg {
+    width: 100%;
+    min-height: 840px;
+    display: block;
+  }
+
+  .graph-panel {
+    position: sticky;
+    top: 94px;
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+  }
+
+  .panel-body {
+    line-height: 1.7;
+  }
+
+  .panel-link {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 8px;
+    padding: 10px 14px;
+    background: var(--page-accent-soft);
+    text-decoration: none;
+  }
+
+  .related-title {
+    margin: 18px 0 10px;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .related-chip {
+    padding: 8px 12px;
+  }
+
+  .center-edge {
+    stroke-width: 3;
+    stroke-opacity: 0.28;
+  }
+
+  .graph-edge {
+    transition:
+      opacity 180ms ease,
+      stroke-width 180ms ease;
+  }
+
+  .related-edge {
+    stroke-width: 1.6;
+    stroke-opacity: 0.12;
+  }
+
+  .category-edge {
+    stroke-width: 1.4;
+    stroke-opacity: 0.18;
+  }
+
+  .graph-edge.is-active {
+    stroke-opacity: 0.72;
+    stroke-width: 2.6;
+  }
+
+  .graph-edge.is-hidden {
+    opacity: 0.04;
+  }
+
+  .graph-node {
+    cursor: pointer;
+    outline: none;
+    transition: opacity 180ms ease;
+  }
+
+  .graph-node circle {
+    stroke: rgba(255, 255, 255, 0.18);
+    stroke-width: 2;
+    transition:
+      transform 180ms ease,
+      stroke 180ms ease,
+      opacity 180ms ease;
+    transform-origin: center;
+  }
+
+  .node-ring {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0);
+  }
+
+  .node-label {
+    fill: #eff1e9;
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: 11px;
+    opacity: 0.56;
+    transition: opacity 180ms ease;
+  }
+
+  .category-node .node-label {
+    font-family: "Fraunces", serif;
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  .center-label {
+    fill: #fffaf4;
+    font-size: 28px;
+    font-family: "Fraunces", serif;
+  }
+
+  .center-sublabel {
+    fill: #fffaf4;
+    font-size: 16px;
+    font-family: "IBM Plex Sans", sans-serif;
+  }
+
+  .graph-node.is-hidden {
+    opacity: 0.12;
+  }
+
+  .graph-node.is-match .node-label,
+  .graph-node.is-neighbor .node-label,
+  .graph-node.is-active .node-label,
+  .graph-node:hover .node-label,
+  .graph-node:focus-visible .node-label {
+    opacity: 1;
+  }
+
+  .graph-node.is-active circle,
+  .graph-node:hover circle,
+  .graph-node:focus-visible circle {
+    stroke: rgba(255, 255, 255, 0.84);
+  }
+
+  .graph-node.is-active .node-ring,
+  .graph-node:hover .node-ring,
+  .graph-node:focus-visible .node-ring {
+    stroke: rgba(255, 255, 255, 0.26);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 1100px) {
+    .graph-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .graph-frame {
+      border-right: 0;
+      padding-right: 0;
+    }
+
+    .graph-panel {
+      position: static;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .graph-header {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .search-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

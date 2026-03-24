@@ -88,6 +88,33 @@ function getCategoryHref(locale: "zh-TW" | "en", category: string) {
   return withBase(locale === "en" ? `/en/${category}` : `/${category}`);
 }
 
+function normalizeLookupKey(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function registerLookup(lookup: Map<string, RelatedLink>, key: string, link: RelatedLink) {
+  const normalized = normalizeLookupKey(key);
+  if (normalized && !lookup.has(normalized)) {
+    lookup.set(normalized, link);
+  }
+}
+
+function resolveWikiLink(rawTarget: string, titleLookup: Map<string, RelatedLink>) {
+  const target = rawTarget.trim();
+  const direct = titleLookup.get(normalizeLookupKey(target));
+
+  if (direct) {
+    return direct;
+  }
+
+  if (!target.includes("/")) {
+    return null;
+  }
+
+  const fallback = target.split("/").pop()?.trim();
+  return fallback ? titleLookup.get(normalizeLookupKey(fallback)) || null : null;
+}
+
 function getTitleLookup(locale: "zh-TW" | "en") {
   const localeRoot = path.join(CONTENT_ROOT, locale);
   const lookup = new Map<string, RelatedLink>();
@@ -101,13 +128,17 @@ function getTitleLookup(locale: "zh-TW" | "en") {
       const { data } = matter(raw);
       const title = String(data.title || path.basename(filePath, ".md"));
       const slug = filenameToSlug(fileEntry.name);
-
-      lookup.set(title, {
+      const link = {
         title,
         href: fileEntry.name.startsWith("_")
           ? getCategoryHref(locale, categoryEntry.name)
           : getArticleHref(locale, categoryEntry.name, slug)
-      });
+      };
+
+      registerLookup(lookup, title, link);
+      registerLookup(lookup, path.basename(fileEntry.name, ".md"), link);
+      registerLookup(lookup, `${categoryEntry.name}/${title}`, link);
+      registerLookup(lookup, `${categoryEntry.name}/${path.basename(fileEntry.name, ".md")}`, link);
     }
   }
 
@@ -144,7 +175,7 @@ function replaceWikiLinks(content: string, titleLookup: Map<string, RelatedLink>
 
   const rendered = content.replace(/\[\[([^[\]]+)\]\]/g, (_, rawTitle: string) => {
     const title = rawTitle.trim();
-    const target = titleLookup.get(title);
+    const target = resolveWikiLink(title, titleLookup);
 
     if (target) {
       if (!seen.has(target.href)) {

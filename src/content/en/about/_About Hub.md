@@ -13,7 +13,7 @@ Without a strong About section, a project like Sweden.md quickly fragments. Some
 
 ## What lives here
 
-This section holds three kinds of material: the project origin, the editorial principles, and the article template. Together they function less like a branding page and more like an operating system for the repository.
+This section holds four kinds of material: the project origin, the editorial principles, the article template, and the blog used for site-direction notes and previews. Together they function less like a branding page and more like an operating system for the repository.
 
 ## What the project is trying to do
 
@@ -27,10 +27,10 @@ Writers, editors, and future agents should return to the About section whenever 
 
 - [[Origin]]
 - [[Editorial Principles]]
+- [[Blog]]
 
 ## References
 
 - `README.md` — project structure and workflow
 - `EDITORIAL.md` — formal editorial standard
 - `AGENTS.md` — repository-level instructions for future agents
-

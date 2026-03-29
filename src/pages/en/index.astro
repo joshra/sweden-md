@@ -6,7 +6,7 @@ import { withBase } from "../../utils/paths";
 const categories = getCategories("en");
 const primaryCategories = categories.filter((category) => !["about", "resources"].includes(category.slug));
 const featuredArticles = getFeaturedArticles("en");
-const latestArticles = getLatestArticles("en", 6);
+const latestArticles = getLatestArticles("en", 4);
 const allArticles = getAllArticles("en").filter((article) => !article.isHub);
 const metrics = getSiteMetrics("en");
 
@@ -18,250 +18,178 @@ const searchIndex = allArticles.map((article) => ({
   readingMinutes: article.readingMinutes
 }));
 
-const trendingTopics = [...primaryCategories].sort((a, b) => b.articleCount - a.articleCount).slice(0, 6);
-
-const featuredSeries = [
+const readingPaths = [
   {
-    eyebrow: "State and history",
-    title: "Start with history, institutions, and geography before Sweden collapses into stereotype.",
-    href: withBase("/en/history"),
-    note: "Build a working frame through state formation, welfare development, and regional difference."
+    title: "State and scale",
+    text: "Start with geography, state formation, and welfare institutions so Sweden does not collapse into a generic Nordic image."
   },
   {
-    eyebrow: "Daily life",
-    title: "Enter through fika, family rhythms, and seasonal rituals.",
-    href: withBase("/en/culture"),
-    note: "A route for readers who want abstract values translated into lived practice."
+    title: "Urban nodes",
+    text: "Move through the capital, port cities, university centers, and regional hubs to see how population and industry are distributed."
   },
   {
-    eyebrow: "Cities and industry",
-    title: "Move from urban nodes into technology, labor, and modern economic life.",
-    href: withBase("/en/cities"),
-    note: "A contemporary path through Sweden's spatial structure, talent flows, and industrial base."
+    title: "Contemporary transitions",
+    text: "Read technology, energy, migration, and everyday life together to understand where Sweden is being renegotiated now."
   }
 ];
 
-const utilityLinks = [
-  { eyebrow: "🗺️ Map", title: "Browse the site through place and spatial clusters.", href: withBase("/en/map") },
-  { eyebrow: "📚 Resources", title: "Jump into official sites, data portals, and research sources.", href: withBase("/en/resources") },
-  { eyebrow: "ℹ️ About", title: "Read the editorial framing and project method.", href: withBase("/en/about") },
-  { eyebrow: "🕒 Changelog", title: "Track newly added and expanded articles.", href: withBase("/en/changelog") },
-  { eyebrow: "✋ Contribute", title: "Start here if you want to improve content or frontend structure.", href: withBase("/en/contribute") }
+const homeTopics = [
+  ...featuredArticles.slice(0, 5),
+  ...primaryCategories
+    .filter((category) => !featuredArticles.some((article) => article.category === category.slug))
+    .slice(0, 4)
+    .map((category) => ({
+      href: category.href,
+      title: category.title,
+      description: category.description,
+      category: category.title,
+      readingMinutes: category.articleCount,
+      isCategory: true
+    }))
 ];
 
-const audienceUseCases = [
-  "Readers who want a coherent understanding of Sweden rather than a stack of Nordic stereotypes.",
-  "People who need a reliable, source-aware entry point for research, teaching, writing, or product context.",
-  "Anyone who wants to move from a single topic into the wider institutional, cultural, urban, and economic picture."
+const utilityLinks = [
+  { title: "Search graph", href: withBase("/en/graph"), note: "Find articles and categories through relationships." },
+  { title: "Map view", href: withBase("/en/map"), note: "Browse through place and regional structure." },
+  { title: "Sources and resources", href: withBase("/en/resources"), note: "Official sites, data portals, and research entry points." },
+  { title: "About Sweden.md", href: withBase("/en/about"), note: "Editorial framing, method, and writing standards." }
 ];
 ---
 
 <Layout
   title="Sweden.md English"
-  description="A curated entry point into Sweden's history, institutions, culture, and technology."
+  description="A curated front door into Sweden for readers who want more structure than stereotype."
   lang="en"
   pageType="home"
 >
-  <section class="card hero cover-panel">
-    <div class="card-inner hero-grid">
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Sweden.md</p>
+      <h1>A homepage that introduces Sweden before it categorizes it.</h1>
+      <p class="lead">
+        This is not a travel guide or a loose encyclopedia. Sweden.md is meant to function as a real front door: a place that first frames Sweden through geography, cities, institutions, and current transitions, and only then opens into the wider library.
+      </p>
+
+      <div class="hero-metrics">
+        <article>
+          <strong>{metrics.articleCount}+</strong>
+          <span>Topic essays</span>
+        </article>
+        <article>
+          <strong>{metrics.categoryCount}</strong>
+          <span>Core categories</span>
+        </article>
+        <article>
+          <strong>{featuredArticles.length}</strong>
+          <span>Starter routes</span>
+        </article>
+      </div>
+    </div>
+
+    <aside class="hero-panel">
+      <p class="eyebrow">From Taiwan to Sweden</p>
+      <h2>Site position</h2>
+      <p>
+        Sweden is introduced here as a readable society, not as a Nordic brand. The aim is to hold cities, industry, institutions, culture, and landscape inside the same frame so readers can understand how the country actually fits together.
+      </p>
+      <ul>
+        <li>Start with how Sweden formed before jumping into what it looks like now.</li>
+        <li>Keep article depth, but give first-time readers a usable entry sequence.</li>
+        <li>Maintain the same editorial thesis across Chinese and English.</li>
+      </ul>
+      <div class="north-star">
+        <span>N</span>
+        <span>S</span>
+        <span>Forests, energy, and resource landscapes</span>
+        <span>Population, cities, and institutional cores</span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="section-heading">
+    <p class="eyebrow">Reading Path</p>
+    <h2>Start with national scale, then move into cities, daily life, and transition.</h2>
+  </section>
+
+  <section class="feature-grid">
+    {readingPaths.map((item) => (
+      <article>
+        <h2>{item.title}</h2>
+        <p>{item.text}</p>
+      </article>
+    ))}
+  </section>
+
+  <section class="section-heading">
+    <p class="eyebrow">Starter Topics</p>
+    <h2>These entry points work better than dropping straight into the full taxonomy.</h2>
+  </section>
+
+  <section class="topic-grid">
+    {homeTopics.map((item, index) => (
+      <article class="topic-card">
+        <p class="topic-number">{item.isCategory ? "Category" : `Start ${index + 1}`}</p>
+        <h2><a href={item.href}>{item.title}</a></h2>
+        <p>{item.description}</p>
+        <div class="pill-row">
+          <span class="pill">{item.isCategory ? item.category : categories.find((category) => category.slug === item.category)?.title}</span>
+          <span class="pill">{item.isCategory ? `${item.readingMinutes} articles` : `${item.readingMinutes} min`}</span>
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <section class="section-heading split-heading">
+    <div>
+      <p class="eyebrow">Recent Updates</p>
+      <h2>Recently added and expanded</h2>
+    </div>
+    <a class="inline-link" href={withBase("/en/changelog")}>See all updates →</a>
+  </section>
+
+  <section class="latest-grid">
+    {latestArticles.map((article) => (
+      <article class="latest-card">
+        <p class="topic-number">Latest</p>
+        <h2><a href={article.href}>{article.title}</a></h2>
+        <p>{article.description || article.excerpt}</p>
+        <div class="pill-row">
+          <span class="pill">{categories.find((category) => category.slug === article.category)?.title}</span>
+          <span class="pill">{article.updatedAt.toLocaleDateString("en-US")}</span>
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <section class="utility-strip">
+    <div class="section-heading split-heading">
       <div>
-        <p class="eyebrow">Sweden.md | A curated knowledge entry point to Sweden</p>
-        <h1>Understand Sweden with more structure and less stereotype.</h1>
-        <p class="lede">
-          Sweden.md is not a travel notebook or a loose encyclopedia. It organizes Sweden's history, society, culture, cities, and technology into a readable, sourced, editorially framed knowledge base for first-time and returning readers.
-        </p>
-
-        <div class="button-row">
-          <a class="button" href="#featured">Start reading</a>
-          <a class="button secondary" href="#search">Search the site</a>
-          <a class="button secondary" href="#latest">Latest updates</a>
-        </div>
-
-        <form id="search" class="search-panel" action={withBase("/en/graph")}>
-          <label class="search-label" for="home-search">Search essays, categories, cities, or key topics</label>
-          <input id="home-search" type="search" name="q" placeholder="For example: welfare, fika, Stockholm, Spotify" autocomplete="off" />
-          <div id="search-results" class="search-results" aria-live="polite">
-            {searchIndex.slice(0, 6).map((article) => (
-              <a class="search-result" href={article.href} data-search-item>
-                <span class="search-meta">{article.category} · {article.readingMinutes} min</span>
-                <strong>{article.title}</strong>
-                <span>{article.description}</span>
-              </a>
-            ))}
-          </div>
-        </form>
+        <p class="eyebrow">Tools</p>
+        <h2>Search and site utilities</h2>
       </div>
-
-      <div class="hero-side">
-        <div class="stat-grid">
-          <article>
-            <strong>{metrics.articleCount}+</strong>
-            <span>Topic essays</span>
-          </article>
-          <article>
-            <strong>{metrics.categoryCount}</strong>
-            <span>Core categories</span>
-          </article>
-          <article>
-            <strong>{featuredArticles.length}</strong>
-            <span>Starter picks</span>
-          </article>
-          <article>
-            <strong>{latestArticles.length}</strong>
-            <span>Recent updates</span>
-          </article>
-        </div>
-
-        <div class="signal">
-          <p class="signal-label">Who this is for</p>
-          <ul class="audience-list">
-            {audienceUseCases.map((item) => (
-              <li>{item}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="trending" class="split">
-    <article class="card">
-      <div class="card-inner">
-        <div class="section-head compact">
-          <div>
-            <p class="eyebrow">Trending topics</p>
-            <h2>High-density themes</h2>
-          </div>
-          <p class="section-note">Start where the library is already deepest, so one article can lead naturally into the next.</p>
-        </div>
-
-        <div class="topic-cluster">
-          {trendingTopics.map((category) => (
-            <a class="topic-chip" href={category.href}>
-              <span>{category.emoji} {category.title}</span>
-              <strong>{category.articleCount} articles</strong>
-            </a>
-          ))}
-        </div>
-      </div>
-    </article>
-
-    <article class="card">
-      <div class="card-inner">
-        <div class="section-head compact">
-          <div>
-            <p class="eyebrow">Series</p>
-            <h2>Editorial entry paths</h2>
-          </div>
-          <p class="section-note">If you are unsure where to begin, start with a path rather than a random page.</p>
-        </div>
-
-        <div class="series-list">
-          {featuredSeries.map((series) => (
-            <a class="series-card" href={series.href}>
-              <p class="eyebrow">{series.eyebrow}</p>
-              <h3>{series.title}</h3>
-              <p>{series.note}</p>
-            </a>
-          ))}
-        </div>
-      </div>
-    </article>
-  </section>
-
-  <section id="featured" class="card editorial-band">
-    <div class="card-inner">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Editor's picks</p>
-          <h2>Five essays to orient a first visit.</h2>
-        </div>
-        <p class="section-note">These are not a random sample. They are a deliberate starting sequence for a first visit.</p>
-      </div>
-
-      <div class="feature-grid">
-        {featuredArticles.map((article, index) => (
-          <a class="feature-card" href={article.href}>
-            <span class="index">{String(index + 1).padStart(2, "0")}</span>
-            <div>
-              <p class="feature-meta">{categories.find((category) => category.slug === article.category)?.title}</p>
-              <h3>{article.title}</h3>
-              <p>{article.description || article.excerpt}</p>
-            </div>
-            <span class="read-time">{article.readingMinutes} min</span>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section id="latest" class="card editorial-band latest-band">
-    <div class="card-inner">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Latest</p>
-          <h2>Recently updated</h2>
-        </div>
-        <p class="section-note">Track the newest additions and major revisions to see which parts of the knowledge base are expanding now.</p>
-      </div>
-
-      <div class="latest-grid">
-        {latestArticles.map((article) => (
-          <a class="latest-card" href={article.href}>
-            <span class="latest-category">{categories.find((category) => category.slug === article.category)?.title}</span>
-            <h3>{article.title}</h3>
-            <p>{article.description || article.excerpt}</p>
-            <span class="latest-meta">{article.updatedAt.toLocaleDateString("en-US")} · {article.readingMinutes} min</span>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section id="categories" class="card editorial-band categories-band">
-    <div class="card-inner">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Explore</p>
-          <h2>All category entry points</h2>
-        </div>
-        <p class="section-note">The full taxonomy stays available for readers who prefer to build their own map of the site.</p>
-      </div>
-
-      <div class="category-grid">
-        {primaryCategories.map((category) => (
-          <a class="category-card" href={category.href}>
-            <div class="category-top">
-              <span class="emoji">{category.emoji}</span>
-              <span class="count">{category.articleCount} articles</span>
-            </div>
-            <h3>{category.title}</h3>
-            <p>{category.description}</p>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="toolbox">
-    <div class="section-head compact">
-      <div>
-        <p class="eyebrow">Tools and site</p>
-        <h2>Utility pages</h2>
-      </div>
-      <p class="section-note">Important, but intentionally secondary to reading and discovery.</p>
     </div>
 
     <div class="utility-grid">
       {utilityLinks.map((item) => (
-        <a class="card utility-card" href={item.href}>
-          <div class="card-inner">
-            <p class="eyebrow">{item.eyebrow}</p>
-            <h3>{item.title}</h3>
-          </div>
+        <a class="utility-card" href={item.href}>
+          <h3>{item.title}</h3>
+          <p>{item.note}</p>
         </a>
       ))}
     </div>
+
+    <form id="search" class="search-panel" action={withBase("/en/graph")}>
+      <label class="eyebrow" for="home-search">Search</label>
+      <input id="home-search" type="search" name="q" placeholder="For example: welfare, Gothenburg, fika, Spotify" autocomplete="off" />
+      <div id="search-results" class="search-results" aria-live="polite">
+        {searchIndex.slice(0, 6).map((article) => (
+          <a class="search-result" href={article.href}>
+            <strong>{article.title}</strong>
+            <span>{article.category} · {article.readingMinutes} min · {article.description}</span>
+          </a>
+        ))}
+      </div>
+    </form>
   </section>
 </Layout>
 
@@ -275,9 +203,8 @@ const audienceUseCases = [
         .map(
           (article) => `
             <a class="search-result" href="${article.href}">
-              <span class="search-meta">${article.category} · ${article.readingMinutes} min</span>
               <strong>${article.title}</strong>
-              <span>${article.description}</span>
+              <span>${article.category} · ${article.readingMinutes} min · ${article.description}</span>
             </a>
           `
         )
@@ -289,7 +216,6 @@ const audienceUseCases = [
 
     input.addEventListener("input", () => {
       const query = input.value.trim().toLowerCase();
-
       if (!query) {
         renderResults(defaultResults);
         return;
@@ -309,10 +235,10 @@ const audienceUseCases = [
           : [
               {
                 href: `${withBase("/en/graph")}?q=${encodeURIComponent(query)}`,
+                title: `Search "${query}" in the graph view`,
                 category: "Keep searching",
-                title: `No exact match. Search "${query}" in the graph view.`,
-                description: "Continue into the full category and article network.",
-                readingMinutes: "Graph"
+                readingMinutes: "Graph",
+                description: "Continue into the full article and category network."
               }
             ]
       );
@@ -321,335 +247,275 @@ const audienceUseCases = [
 </script>
 
 <style>
-  .hero-grid,
-  .split,
-  .section-head,
-  .utility-grid,
-  .latest-grid {
+  .hero,
+  .feature-grid,
+  .topic-grid,
+  .latest-grid,
+  .utility-grid {
     display: grid;
-    gap: 22px;
+    gap: 20px;
   }
 
-  .hero-grid {
-    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.85fr);
-    align-items: start;
-    min-height: 500px;
+  .hero,
+  .feature-grid article,
+  .topic-card,
+  .latest-card,
+  .utility-card,
+  .search-panel {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 251, 244, 0.9);
+    border: 1px solid rgba(25, 33, 38, 0.12);
+    box-shadow: 0 24px 60px rgba(25, 33, 38, 0.1);
   }
 
-  .cover-panel {
-    background:
-      radial-gradient(circle at 78% 16%, rgba(34, 93, 109, 0.22), transparent 24%),
-      radial-gradient(circle at 10% 10%, rgba(191, 106, 43, 0.16), transparent 22%),
-      linear-gradient(180deg, rgba(255, 248, 238, 0.98), rgba(247, 239, 228, 0.92));
+  .hero {
+    grid-template-columns: 1.3fr 0.9fr;
+    gap: 24px;
+    padding: 32px;
+    border-radius: 32px;
+    position: relative;
+    overflow: hidden;
   }
 
-  h1 {
-    font-size: clamp(3rem, 6vw, 5.6rem);
-    max-width: 10ch;
-    margin-bottom: 18px;
-  }
-
-  .lede {
-    max-width: 61ch;
-    margin: 0 0 26px;
-    color: var(--muted);
-    font-size: 1.08rem;
+  .hero::after {
+    content: "";
+    position: absolute;
+    width: 340px;
+    height: 340px;
+    right: -60px;
+    top: -80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(15, 118, 110, 0.18), transparent 68%);
   }
 
   .hero h1 {
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+    font-size: clamp(3rem, 5vw, 5.2rem);
+    line-height: 1.05;
+    margin: 0 0 14px;
+    max-width: 11ch;
   }
 
-  .hero-side,
-  .series-list,
-  .toolbox {
-    display: grid;
-    gap: 16px;
+  .eyebrow,
+  .topic-number {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.78rem;
+    color: #0f766e;
+    margin: 0 0 10px;
   }
 
-  .hero-side {
-    align-self: stretch;
+  .topic-number {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(15, 118, 110, 0.1);
   }
 
-  .search-panel,
-  .signal,
-  .stat-grid article,
-  .feature-card,
-  .category-card,
-  .latest-card,
-  .series-card,
-  .topic-chip,
-  .search-result {
-    border: 1px solid var(--line);
-    border-radius: 22px;
-    background: var(--surface-strong);
-  }
-
-  .search-panel {
-    background:
-      linear-gradient(180deg, rgba(255, 254, 250, 0.9), rgba(248, 239, 226, 0.92)),
-      repeating-linear-gradient(0deg, transparent 0, transparent 26px, rgba(31, 43, 34, 0.04) 26px, rgba(31, 43, 34, 0.04) 27px);
-  }
-
-  .search-panel {
-    display: grid;
-    gap: 12px;
-    margin-top: 24px;
-    padding: 18px;
-  }
-
-  .search-label,
-  .signal-label,
-  .search-meta,
-  .latest-category,
-  .latest-meta,
-  .feature-meta,
-  .count,
-  .section-note,
-  .category-card p,
-  .series-card p,
-  .utility-card p {
+  .lead,
+  .hero-panel p,
+  .hero-panel li,
+  .feature-grid p,
+  .topic-card p,
+  .latest-card p,
+  .utility-card p,
+  .search-result span {
     color: var(--muted);
   }
 
-  .search-label,
-  .signal-label,
-  .latest-category {
-    font-size: 0.82rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+  .lead {
+    max-width: 60ch;
+    font-size: 1.08rem;
   }
 
-  #home-search {
+  .hero-panel,
+  .search-panel {
+    padding: 22px;
+    border-radius: 24px;
+    background:
+      linear-gradient(180deg, rgba(15, 118, 110, 0.12), rgba(217, 119, 6, 0.06)),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.2));
+  }
+
+  .hero-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 24px;
+    max-width: 640px;
+  }
+
+  .hero-metrics article {
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(25, 33, 38, 0.08);
+  }
+
+  .hero-metrics strong {
+    display: block;
+    font-size: 1.6rem;
+    color: #0f766e;
+  }
+
+  .north-star {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: 32px 32px 1fr 1fr;
+    gap: 10px;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .north-star span:nth-child(1),
+  .north-star span:nth-child(2) {
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(25, 33, 38, 0.12);
+    color: #0f766e;
+    background: rgba(255, 255, 255, 0.65);
+  }
+
+  .section-heading {
+    margin-top: 10px;
+    padding-inline: 4px;
+  }
+
+  .section-heading h2 {
+    margin: 0;
+    font-size: clamp(1.5rem, 2vw, 2.2rem);
+    max-width: 24ch;
+  }
+
+  .split-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: end;
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .feature-grid article,
+  .topic-card,
+  .latest-card,
+  .utility-card {
+    padding: 24px;
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-grid article::after,
+  .topic-card::after,
+  .latest-card::after {
+    content: "";
+    position: absolute;
+    inset: auto -24px -40px auto;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(15, 118, 110, 0.12), transparent 70%);
+  }
+
+  .topic-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .latest-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .utility-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: 20px;
+  }
+
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(15, 118, 110, 0.08);
+    color: #0f766e;
+    font-size: 0.88rem;
+  }
+
+  .inline-link,
+  .topic-card a,
+  .latest-card a,
+  .utility-card {
+    text-decoration: none;
+  }
+
+  .search-panel input {
     width: 100%;
     padding: 14px 16px;
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.65);
+    border-radius: 14px;
+    border: 1px solid rgba(25, 33, 38, 0.12);
+    background: rgba(255, 255, 255, 0.7);
     color: var(--ink);
     font: inherit;
-  }
-
-  #home-search:focus {
-    outline: 2px solid rgba(193, 99, 29, 0.24);
-    outline-offset: 2px;
   }
 
   .search-results {
     display: grid;
     gap: 10px;
-  }
-
-  .audience-list {
-    margin: 0;
-    padding-left: 1.1rem;
-    display: grid;
-    gap: 10px;
-    color: var(--muted);
+    margin-top: 14px;
   }
 
   .search-result {
     display: grid;
     gap: 4px;
-    padding: 14px 16px;
-    text-decoration: none;
-    transition:
-      transform 180ms ease,
-      border-color 180ms ease;
-  }
-
-  .search-result:hover,
-  .search-result:focus-visible,
-  .feature-card:hover,
-  .feature-card:focus-visible,
-  .category-card:hover,
-  .category-card:focus-visible,
-  .latest-card:hover,
-  .latest-card:focus-visible,
-  .series-card:hover,
-  .series-card:focus-visible,
-  .topic-chip:hover,
-  .topic-chip:focus-visible,
-  .utility-card:hover,
-  .utility-card:focus-visible {
-    transform: translateY(-2px);
-    border-color: rgba(193, 99, 29, 0.28);
-  }
-
-  .hero-side {
-    gap: 18px;
-  }
-
-  .stat-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-  }
-
-  .stat-grid article,
-  .signal {
-    padding: 18px;
-  }
-
-  .stat-grid article {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .stat-grid article::after {
-    content: "";
-    position: absolute;
-    inset: auto -18% -46% 34%;
-    height: 120px;
-    background: radial-gradient(circle, rgba(191, 106, 43, 0.18), transparent 68%);
-    pointer-events: none;
-  }
-
-  .signal {
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(248, 239, 227, 0.92)),
-      repeating-linear-gradient(0deg, transparent 0, transparent 27px, rgba(46, 87, 65, 0.04) 27px, rgba(46, 87, 65, 0.04) 28px);
-  }
-
-  .stat-grid strong {
-    display: block;
-    font-family: var(--serif);
-    font-size: 2rem;
-  }
-
-  .split {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .section-head {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: end;
-    margin-bottom: 22px;
-  }
-
-  .section-head.compact {
-    margin-bottom: 18px;
-  }
-
-  .section-head h2 {
-    font-size: clamp(2rem, 3vw, 3rem);
-  }
-
-  .editorial-band {
-    border-radius: 34px;
-  }
-
-  .topic-cluster,
-  .feature-grid,
-  .category-grid,
-  .utility-grid,
-  .latest-grid {
-    display: grid;
-    gap: 16px;
-  }
-
-  .topic-cluster {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .topic-chip {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 16px 18px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(25, 33, 38, 0.08);
     text-decoration: none;
   }
 
-  .topic-chip strong {
-    font-family: var(--serif);
-    font-size: 1.15rem;
-  }
-
-  .series-card,
-  .latest-card,
-  .category-card,
-  .feature-card {
-    text-decoration: none;
-  }
-
-  .series-card,
-  .latest-card {
-    display: grid;
-    gap: 8px;
-    padding: 20px;
-  }
-
-  .feature-grid,
-  .latest-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .feature-card {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 18px;
-    padding: 20px;
-  }
-
-  .index {
-    font-family: var(--serif);
-    font-size: 2rem;
-    color: var(--accent);
-    line-height: 1;
-  }
-
-  .read-time {
-    align-self: start;
-    color: var(--forest);
-    font-size: 0.88rem;
-    font-weight: 600;
-  }
-
-  .category-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .category-card {
-    display: grid;
-    gap: 12px;
-    padding: 20px;
-  }
-
-  .category-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-
-  .emoji {
-    font-size: 1.45rem;
-  }
-
-  .utility-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .utility-card {
-    text-decoration: none;
-  }
-
-  @media (max-width: 980px) {
-    .hero-grid,
-    .split,
+  @media (max-width: 1100px) {
+    .hero,
     .feature-grid,
-    .category-grid,
-    .utility-grid,
+    .topic-grid,
     .latest-grid,
-    .section-head,
-    .topic-cluster {
+    .utility-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .split-heading {
+      display: grid;
+    }
+  }
+
+  @media (max-width: 780px) {
+    .hero,
+    .feature-grid,
+    .topic-grid,
+    .latest-grid,
+    .utility-grid,
+    .hero-metrics {
       grid-template-columns: 1fr;
     }
 
-    h1 {
-      max-width: 12ch;
+    .north-star {
+      grid-template-columns: 32px 32px 1fr;
+    }
+
+    .hero {
+      padding: 24px;
     }
   }
 </style>

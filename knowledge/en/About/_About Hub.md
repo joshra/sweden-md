@@ -15,13 +15,17 @@ Without a strong About section, a project like Sweden.md quickly fragments. Some
 
 This section holds four kinds of material: the project origin, the editorial principles, the article template, and the blog used for site-direction notes and previews. Together they function less like a branding page and more like an operating system for the repository.
 
-## What the project is trying to do
+## Core tensions this category has to manage
 
-Sweden.md is not trying to become the biggest collection of facts about Sweden. It is trying to become a curated country knowledge base in which each article acts as an entry point into a larger Swedish story.
+The About section is where Sweden.md handles recurring editorial tensions early: readability versus depth, narrative voice versus factual rigor, and Taiwanese reader context versus Swedish institutional specificity. If these tensions are not made explicit, topic articles tend to drift toward either flat data dumps or unsupported personal commentary.
 
-## How to use this section
+So this category is not just a style guide. It is where conflicts are turned into editorial rules before they spread across the rest of the repository.
 
-Writers, editors, and future agents should return to the About section whenever an article feels too thin, too generic, unsourced, or disconnected from the rest of the project.
+## How the child pages work together
+
+These pages form a reading sequence rather than a loose list. `Origin` explains why the project exists. `Editorial Principles` defines quality thresholds. The article template translates those standards into a reusable structure. `Blog` records how the method evolves through active building.
+
+Taken together, the About category shows not only what Sweden.md publishes, but how its knowledge system is maintained over time.
 
 ## Related topics
 

@@ -1,26 +1,37 @@
 ---
 title: People Hub
-description: Using individual lives to read Sweden's cultural and institutional imagination.
+description: This hub reads Swedish figures as social lenses, helping Taiwan-based readers trace how culture, science, and public memory build Sweden's larger story.
 ---
 
 # People Hub
 
-> **30-second overview:** People pages in Sweden.md are not celebrity lists. They use individual lives to show how Sweden has been narrated, exported, remembered, and institutionalized through culture, science, and public symbolism.
+> **30-second overview:** When I introduce Sweden to friends in Taiwan, I rarely begin with abstract models. I begin with people. In this hub, biographies are not idol portraits. They are practical lenses for reading how Sweden is made through ideas, institutions, and cultural memory.
 
 ## Why it matters
 
-National stories can become overly abstract. Individuals make those structures visible. Through figures such as Alfred Nobel and Ingmar Bergman, it becomes easier to see how Sweden gained international visibility in science, culture, and symbolic authority.
+Country narratives can become too abstract too quickly. "Welfare state," "innovation economy," or "cultural exporter" are useful labels, but they do not show how those labels became believable. Individual lives make that process visible.
 
-The aim is not hero worship. It is to place lives back inside the institutions and historical conditions that gave them meaning.
+For Taiwan-based readers, this category helps with translation across contexts. A person such as Alfred Nobel can open questions about industry, science, and global prestige. A person such as Ingmar Bergman can open questions about image, narrative, and national feeling. The point is not hero worship, but structure through story.
 
-## What to look for
+## Core tensions in this category
 
-The first key is representativeness. A person matters here when they open a larger Swedish question. The second is linkage. Each life should connect back to categories such as cinema, science, public culture, or national image. The third is memorialization. How Sweden remembers a person is part of how it explains itself.
+The People category is where several Swedish tensions become legible:
 
-## Suggested reading path
+- global visibility vs. domestic complexity: people travel abroad as symbols, even when their home context is messier.
+- individual achievement vs. institutional scaffolding: no figure stands alone; schools, publishers, firms, and public institutions shape outcomes.
+- memory vs. history: how Sweden remembers a person can differ from the conflicts that person lived through.
 
-- Start with [[Alfred Nobel]] for the link between science, industry, and international prestige.
-- Continue to [[Ingmar Bergman]] for the role of image and narrative in shaping Sweden abroad.
+These tensions are exactly why biographies belong in Sweden.md: they keep national storytelling honest.
+
+## How the child articles fit together
+
+Read this hub as a guided sequence rather than a ranking:
+
+- [[Alfred Nobel]]: science, capital, and the institutionalization of global prestige.
+- [[Ingmar Bergman]]: cinema as an exportable emotional language of Sweden.
+- [[Astrid Lindgren]]: childhood, ethics, and the public moral vocabulary of everyday life.
+
+Taken together, these pages show that Sweden's international image is not accidental. It is repeatedly produced through people, then stabilized through institutions that preserve and circulate their legacies.
 
 ## Related topics
 

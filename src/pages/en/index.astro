@@ -9,6 +9,7 @@ const featuredArticles = getFeaturedArticles("en");
 const latestArticles = getLatestArticles("en", 4);
 const allArticles = getAllArticles("en").filter((article) => !article.isHub);
 const metrics = getSiteMetrics("en");
+const prioritizedCategorySlugs = ["people"];
 
 const searchIndex = allArticles.map((article) => ({
   title: article.title,
@@ -35,7 +36,10 @@ const readingPaths = [
 
 const homeTopics = [
   ...featuredArticles.slice(0, 5),
-  ...primaryCategories
+  ...[
+    ...primaryCategories.filter((category) => prioritizedCategorySlugs.includes(category.slug)),
+    ...primaryCategories.filter((category) => !prioritizedCategorySlugs.includes(category.slug))
+  ]
     .filter((category) => !featuredArticles.some((article) => article.category === category.slug))
     .slice(0, 4)
     .map((category) => ({

@@ -112,6 +112,16 @@ export const categoryConfig: Record<string, CategoryConfig> = {
     accent: "#4b688f",
     accentSoft: "rgba(75, 104, 143, 0.14)"
   },
+  mythology: {
+    slug: "mythology",
+    label: "神話",
+    labelEn: "Mythology",
+    emoji: "⚡",
+    description: "諸神、宇宙觀與北歐神話在瑞典文化中的長期回聲。",
+    descriptionEn: "Gods, cosmology, and the long cultural afterlife of Norse myth in Sweden.",
+    accent: "#7a5a8e",
+    accentSoft: "rgba(122, 90, 142, 0.14)"
+  },
   nature: {
     slug: "nature",
     label: "自然",

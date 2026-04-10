@@ -363,18 +363,20 @@ export function getFeaturedArticles(locale: "zh-TW" | "en") {
   const picks =
     locale === "en"
       ? [
+          ["culture", "Fika and Everyday Life"],
+          ["food", "The Swedish Home Table"],
           ["history", "From Vikings to the Welfare State"],
           ["society", "Welfare and Social Trust"],
           ["technology", "Sweden's Technology Ecosystem"],
-          ["nature", "Forests and Public Access"],
-          ["culture", "Fika and Everyday Life"]
+          ["nature", "Forests and Public Access"]
         ]
       : [
+          ["culture", "Fika與日常生活"],
+          ["food", "瑞典家常餐桌"],
           ["history", "從維京到福利國"],
           ["society", "福利國與高信任社會"],
           ["technology", "瑞典科技生態"],
-          ["nature", "森林與公共可近性"],
-          ["culture", "Fika與日常生活"]
+          ["nature", "森林與公共可近性"]
         ];
 
   return picks

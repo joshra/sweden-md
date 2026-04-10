@@ -9,7 +9,7 @@ const featuredArticles = getFeaturedArticles("en");
 const latestArticles = getLatestArticles("en", 4);
 const allArticles = getAllArticles("en").filter((article) => !article.isHub);
 const metrics = getSiteMetrics("en");
-const prioritizedCategorySlugs = ["people"];
+const prioritizedCategorySlugs = ["culture", "food", "lifestyle", "history"];
 
 const searchIndex = allArticles.map((article) => ({
   title: article.title,
@@ -21,16 +21,16 @@ const searchIndex = allArticles.map((article) => ({
 
 const readingPaths = [
   {
-    title: "State and scale",
-    text: "Start with geography, state formation, and welfare institutions so Sweden does not collapse into a generic Nordic image."
+    title: "Cultural entry points",
+    text: "Begin with fika, the home table, seasonal rituals, and domestic design. Culture is the fastest way into how Sweden feels in practice."
   },
   {
-    title: "Urban nodes",
-    text: "Move through the capital, port cities, university centers, and regional hubs to see how population and industry are distributed."
+    title: "Everyday rhythms",
+    text: "Read work boundaries, parental leave, domestic space, and public aesthetics together to understand how time and social life are arranged."
   },
   {
-    title: "Contemporary transitions",
-    text: "Read technology, energy, migration, and everyday life together to understand where Sweden is being renegotiated now."
+    title: "Institutions and transition",
+    text: "Only after culture has done its work should you move into welfare institutions, cities, technology, and the larger national frame."
   }
 ];
 
@@ -69,9 +69,9 @@ const utilityLinks = [
   <section class="hero">
     <div class="hero-copy">
       <p class="eyebrow">Sweden.md</p>
-      <h1>A homepage that introduces Sweden before it categorizes it.</h1>
+      <h1>Start with culture before you move into the state.</h1>
       <p class="lead">
-        This is not a travel guide or a loose encyclopedia. Sweden.md is meant to function as a real front door: a place that first frames Sweden through geography, cities, institutions, and current transitions, and only then opens into the wider library.
+        This is not a travel guide or a loose encyclopedia. Sweden.md is meant to function as a real front door: it begins with fika, the table, seasonal rituals, and everyday rhythm, then opens outward into history, institutions, cities, and contemporary transition.
       </p>
 
       <div class="hero-metrics">
@@ -94,11 +94,11 @@ const utilityLinks = [
       <p class="eyebrow">From Taiwan to Sweden</p>
       <h2>Site position</h2>
       <p>
-        Sweden is introduced here as a readable society, not as a Nordic brand. The aim is to hold cities, industry, institutions, culture, and landscape inside the same frame so readers can understand how the country actually fits together.
+        Sweden is introduced here as a readable society, not as a Nordic brand. The entry sequence starts with lived culture so readers feel the country before they sort it into institutions, cities, industry, and landscape.
       </p>
       <ul>
-        <li>Start with how Sweden formed before jumping into what it looks like now.</li>
-        <li>Keep article depth, but give first-time readers a usable entry sequence.</li>
+        <li>Use cultural practices first, then move into structure and history.</li>
+        <li>Keep the essays deep, but put the most human entry points up front.</li>
         <li>Maintain the same editorial thesis across Chinese and English.</li>
       </ul>
       <div class="north-star">
@@ -112,7 +112,7 @@ const utilityLinks = [
 
   <section class="section-heading">
     <p class="eyebrow">Reading Path</p>
-    <h2>Start with national scale, then move into cities, daily life, and transition.</h2>
+    <h2>Start with culture and daily life, then widen into institutions, cities, and scale.</h2>
   </section>
 
   <section class="feature-grid">
@@ -126,7 +126,7 @@ const utilityLinks = [
 
   <section class="section-heading">
     <p class="eyebrow">Starter Topics</p>
-    <h2>These entry points work better than dropping straight into the full taxonomy.</h2>
+    <h2>Culture-led starters make Sweden easier to enter than a cold category list.</h2>
   </section>
 
   <section class="topic-grid">

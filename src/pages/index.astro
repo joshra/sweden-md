@@ -9,7 +9,7 @@ const featuredArticles = getFeaturedArticles("zh-TW");
 const latestArticles = getLatestArticles("zh-TW", 4);
 const allArticles = getAllArticles("zh-TW").filter((article) => !article.isHub);
 const metrics = getSiteMetrics("zh-TW");
-const prioritizedCategorySlugs = ["people"];
+const prioritizedCategorySlugs = ["culture", "food", "lifestyle", "history"];
 
 const searchIndex = allArticles.map((article) => ({
   title: article.title,
@@ -21,16 +21,16 @@ const searchIndex = allArticles.map((article) => ({
 
 const readingPaths = [
   {
-    title: "國家底圖",
-    text: "先把地理尺度、歷史形成與福利國制度放進同一條線裡看，瑞典才不會變成抽象北歐印象。"
+    title: "文化入口",
+    text: "先從 Fika、家常餐桌、季節儀式與設計感進站，會比先背制度名詞更快摸到瑞典日常的質地。"
   },
   {
-    title: "城市節點",
-    text: "從首都、港口、大學城與區域中心出發，理解人口、產業與知識網絡如何分布。"
+    title: "生活節奏",
+    text: "把工作邊界、育兒假、家居想像與公共美學一起讀，才能理解瑞典如何安排時間、關係與私人空間。"
   },
   {
-    title: "當代轉型",
-    text: "把科技、能源、移民與生活節奏放回社會脈絡，看到今天瑞典真正正在調整的地方。"
+    title: "制度與轉型",
+    text: "文化讀進去之後，再回頭看歷史、福利國、科技與城市結構，瑞典就不會只剩下北歐標籤。"
   }
 ];
 
@@ -69,9 +69,9 @@ const utilityLinks = [
   <section class="hero">
     <div class="hero-copy">
       <p class="eyebrow">Sweden.md</p>
-      <h1>給台灣讀者的瑞典導讀首頁。</h1>
+      <h1>先從文化走進瑞典，而不是先背國家設定。</h1>
       <p class="lead">
-        這不是旅遊清單，也不是零散百科。Sweden.md 想做的是一個真正的前門：先用台灣讀者容易進入的尺度，介紹瑞典的地理結構、城市網絡、制度脈絡與當代轉型，再讓你自己往下延伸。
+        這不是旅遊清單，也不是零散百科。Sweden.md 想做的是一個真正的前門：先從 `Fika`、餐桌、季節儀式與生活節奏這些台灣讀者最容易感到「原來如此」的文化入口開始，再慢慢走進歷史、制度、城市與當代轉型。
       </p>
 
       <div class="hero-metrics">
@@ -94,11 +94,11 @@ const utilityLinks = [
       <p class="eyebrow">From Taiwan to Sweden</p>
       <h2>網站定位</h2>
       <p>
-        用台灣讀者熟悉的比較感，重新介紹瑞典。不是把它寫成理想國，也不是把它變成北歐品牌，而是把城市、產業、制度、文化與自然放回同一個可閱讀的結構。
+        用台灣讀者熟悉的比較感，重新介紹瑞典。不是把它寫成理想國，也不是把它變成北歐品牌，而是先從日常文化打開感覺，再把城市、產業、制度與自然放回同一個可閱讀的結構。
       </p>
       <ul>
-        <li>先讀懂瑞典怎麼形成，再讀懂今天為什麼長成這樣。</li>
-        <li>保留文章深度，但首頁先幫你排好入口順序。</li>
+        <li>先用文化與日常建立手感，再往下讀制度與歷史。</li>
+        <li>保留文章深度，但首頁先把最有人味的入口排在前面。</li>
         <li>中文與英文都維持同一個策展核心，不做機械翻譯。</li>
       </ul>
       <div class="north-star">
@@ -112,7 +112,7 @@ const utilityLinks = [
 
   <section class="section-heading">
     <p class="eyebrow">Reading Path</p>
-    <h2>先掌握國家尺度，再走進城市、日常與當代轉型。</h2>
+    <h2>先讀文化與日常，再往制度、城市與國家尺度擴張。</h2>
   </section>
 
   <section class="feature-grid">
@@ -126,7 +126,7 @@ const utilityLinks = [
 
   <section class="section-heading">
     <p class="eyebrow">Starter Topics</p>
-    <h2>從這些主題開始，比直接闖進完整分類更容易讀懂瑞典。</h2>
+    <h2>首頁先把文化主題推到前面，因為這才是最自然的瑞典入口。</h2>
   </section>
 
   <section class="topic-grid">

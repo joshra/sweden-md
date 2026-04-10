@@ -5,9 +5,9 @@ date: 2026-04-07
 tags: [people, literature, childhood, Sweden]
 ---
 
-# Childhood Must Be Free, and Stories Must Stand With the Child
+# Astrid Lindgren
 
-In Taiwan, Swedish children's literature is often received through softness, imagination, and a certain northern brightness. But from within Sweden, Astrid Lindgren matters for something deeper. She did not simply write beloved books. She helped articulate a moral idea that became central to modern Sweden: a child is not an unfinished adult, but a full human being worthy of respect.
+In Taiwan, Swedish children's literature is often received through softness, imagination, and a certain northern brightness. But from within Sweden, Lindgren matters for something deeper. She did not simply write beloved books. She helped articulate a moral idea that became central to modern Sweden: a child is not an unfinished adult, but a full human being worthy of respect.
 
 > **30-second overview:** Astrid Lindgren was more than a world-famous children's author. She gave Sweden one of its clearest cultural languages for talking about childhood, freedom, courage, and moral seriousness. From Pippi Longstocking to her later public advocacy, she made standing with the child feel less like a literary style than a social position.
 
@@ -63,7 +63,7 @@ For readers outside Sweden, that may be her greatest value. She shows that a soc
 ## References
 
 - [Astrid Lindgren official website: About Astrid Lindgren](https://www.astridlindgren.com/en/about-astrid-lindgren) — Official biography, works, and public legacy
-- [Astrid Lindgren official website: Childhood](https://www.astridlindgren.com/gb/about-astrid-lindgren/childhood/) — Childhood, Näs, and reading environment
+- [Astrid Lindgren official website: Childhood](https://www.astridlindgren.com/en/about-astrid-lindgren/childhood/) — Childhood, Näs, and reading environment
 - [Astrid Lindgren official website: Astrid Lindgren's legacy](https://www.astridlindgren.com/en/about-astrid-lindgren/astrid-lindgrens-legacy) — Posthumous cultural influence and legacy
 - [Astrid Lindgren Memorial Award: Ordinance](https://alma.se/en/the-award/regulations/ordinance/) — Government ordinance establishing the award in 2002
 - [Astrid Lindgren Memorial Award](https://alma.se/en/) — Award mission and current institutional context

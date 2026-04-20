@@ -33,6 +33,16 @@ npm run sync
 npm run dev
 ```
 
+## Google Analytics
+
+Set the GA4 measurement ID with a public Astro env var before running or deploying:
+
+```bash
+echo 'PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX' >> .env
+```
+
+When `PUBLIC_GA_MEASUREMENT_ID` is present, the site loads `gtag.js` on every page through the shared layout.
+
 ## Working rule
 
 After every content or code update, rebuild the project before considering the change complete:

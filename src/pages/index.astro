@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { getAllArticles, getCategories, getFeaturedArticles, getLatestArticles, getSiteMetrics } from "../utils/content";
 import { withBase } from "../utils/paths";
+import { getCategoryConfig } from "../utils/categoryConfig";
 
 const categories = getCategories("zh-TW");
 const primaryCategories = categories.filter((category) => !["about", "resources"].includes(category.slug));
@@ -163,6 +164,28 @@ const utilityLinks = [
         </div>
       </article>
     ))}
+  </section>
+
+  <section class="section-heading">
+    <p class="eyebrow">All Categories</p>
+    <h2>從任何一個分類進站都可以。</h2>
+  </section>
+
+  <section class="category-chips">
+    {primaryCategories.map((cat) => {
+      const cfg = getCategoryConfig(cat.slug);
+      return (
+        <a
+          class="cat-chip"
+          href={cat.href}
+          style={`--chip-accent:${cfg?.accent ?? '#0f766e'};--chip-soft:${cfg?.accentSoft ?? 'rgba(15,118,110,0.12)'}`}
+        >
+          <span class="cat-chip-emoji">{cat.emoji}</span>
+          <span class="cat-chip-name">{cat.title}</span>
+          <span class="cat-chip-count">{cat.articleCount} 篇</span>
+        </a>
+      );
+    })}
   </section>
 
   <section class="utility-strip">
@@ -503,6 +526,38 @@ const utilityLinks = [
       display: grid;
     }
   }
+
+  .category-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .cat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--chip-soft, rgba(15, 118, 110, 0.14));
+    background: var(--chip-soft, rgba(15, 118, 110, 0.08));
+    color: var(--chip-accent, #0f766e);
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    backdrop-filter: blur(8px);
+  }
+
+  .cat-chip:hover,
+  .cat-chip:focus-visible {
+    transform: translateY(-2px);
+    border-color: var(--chip-accent, #0f766e);
+    background: rgba(255, 255, 255, 0.72);
+  }
+
+  .cat-chip-emoji { font-size: 1.05rem; line-height: 1; }
+  .cat-chip-name  { font-weight: 600; }
+  .cat-chip-count { font-size: 0.78rem; opacity: 0.72; }
 
   @media (max-width: 780px) {
     .hero,

@@ -1,0 +1,343 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { electionArticleLinks, electionDate, electionIssues, electionParties, electionSources, t } from "../data/election2026";
+import { getArticle } from "../utils/content";
+import { withBase } from "../utils/paths";
+import ArticleVisualCards from "../components/ArticleVisualCards.astro";
+
+const locale = "zh-TW";
+const articleCards = electionArticleLinks.map((item) => {
+  const article = getArticle("zh-TW", "society", item.slug);
+  return {
+    ...item,
+    href: article?.href || withBase(`/society/${item.slug}`)
+  };
+});
+---
+
+<Layout
+  title="瑞典 2026 大選與政黨專區 | Sweden.md"
+  description="給台灣讀者的瑞典 2026 大選與八大政黨圖解入口，從選制、政黨、議題到選後組閣一次建立閱讀地圖。"
+  lang="zh-TW"
+  pageType="election"
+>
+  <section class="election-hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Election 2026</p>
+      <h1>瑞典 2026 大選，不是選一位總統，而是重排一整張治理拼圖。</h1>
+      <p>
+        2026 年 9 月 13 日，瑞典同日舉行國會、區域與市鎮選舉。這個專區用六篇文章與十八張百科圖解卡，帶台灣讀者先看懂制度，再看懂政黨，最後看懂選後為什麼還要談判。
+      </p>
+      <div class="button-row">
+        <a class="button" href="#articles">開始閱讀</a>
+        <a class="button secondary" href={withBase("/en/election-2026")}>English</a>
+      </div>
+    </div>
+    <aside class="date-panel" aria-label="2026 election date">
+      <span>投票日</span>
+      <strong>{electionDate}</strong>
+      <p>國會、區域、市鎮同日選舉</p>
+    </aside>
+  </section>
+
+  <section class="card">
+    <div class="card-inner section-grid">
+      <div>
+        <p class="eyebrow">How To Read</p>
+        <h2>先讀三件事：制度、政黨、組閣。</h2>
+      </div>
+      <p>
+        瑞典政治很容易被誤讀成「左派 vs 右派」或「高福利 vs 反移民」。真正的重點是比例代表制讓八黨共存，政黨再透過協議、容忍與政策交換，把分歧變成可治理的安排。
+      </p>
+    </div>
+  </section>
+
+  <section class="diagram-preview">
+    <ArticleVisualCards slug="election-2026-overview" locale="zh-TW" />
+  </section>
+
+  <section class="card">
+    <div class="card-inner">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Riksdag Parties</p>
+          <h2>八大國會政黨速讀</h2>
+        </div>
+        <p>席次為 2022 選後國會基準，用來理解 2026 選前的政治起點。</p>
+      </div>
+      <div class="party-grid">
+        {electionParties.map((party) => (
+          <article class={`party-card tone-${party.tone}`}>
+            <div class="party-mark">{party.shortName}</div>
+            <div>
+              <h3>{t(party.name, locale)}</h3>
+              <p class="family">{t(party.family, locale)}</p>
+              <p>{t(party.role, locale)}</p>
+            </div>
+            <strong>{party.seats2022} 席</strong>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-inner">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Issue Map</p>
+          <h2>2026 選戰的四組問題</h2>
+        </div>
+        <p>這些不是孤立議題，而是互相牽動的治理壓力。</p>
+      </div>
+      <div class="issue-grid">
+        {electionIssues.map((issue) => (
+          <article>
+            <h3>{t(issue.title, locale)}</h3>
+            <p>{t(issue.text, locale)}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="articles" class="card">
+    <div class="card-inner">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Articles + Diagram Cards</p>
+          <h2>六篇首發文章，每篇三張百科圖解卡</h2>
+        </div>
+        <p>圖卡是資料驅動的 SVG/HTML 圖解，標籤可雙語切換，避免不可校對的圖片文字。</p>
+      </div>
+      <div class="article-grid">
+        {articleCards.map((article, index) => (
+          <a class="article-card" href={article.href}>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <h3>{t(article.title, locale)}</h3>
+            <p>{t(article.description, locale)}</p>
+            <em>3 張圖解卡</em>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-inner">
+      <p class="eyebrow">Sources</p>
+      <h2>資料來源</h2>
+      <div class="source-list">
+        {electionSources.map((source) => (
+          <a href={source.href} target="_blank" rel="noreferrer">{source.label}</a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .election-hero,
+  .section-grid,
+  .section-head {
+    display: grid;
+    gap: 22px;
+  }
+
+  .election-hero {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    align-items: stretch;
+  }
+
+  .hero-copy,
+  .date-panel {
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    background: linear-gradient(180deg, rgba(255, 253, 249, 0.98), rgba(246, 239, 229, 0.94));
+    box-shadow: var(--shadow);
+    padding: 34px;
+  }
+
+  h1 {
+    font-size: clamp(2.7rem, 5vw, 5rem);
+    max-width: 11ch;
+    margin-bottom: 18px;
+  }
+
+  h2 {
+    font-size: clamp(1.8rem, 3vw, 3rem);
+  }
+
+  .hero-copy p:not(.eyebrow),
+  .section-head p,
+  .section-grid p,
+  .issue-grid p,
+  .party-card p,
+  .article-card p {
+    color: var(--muted);
+  }
+
+  .date-panel {
+    display: grid;
+    align-content: center;
+    gap: 14px;
+  }
+
+  .date-panel span {
+    color: var(--page-accent);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .date-panel strong {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 4vw, 4rem);
+    line-height: 1;
+  }
+
+  .section-grid,
+  .section-head {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+    align-items: end;
+  }
+
+  .party-grid,
+  .issue-grid,
+  .article-grid {
+    display: grid;
+    gap: 14px;
+  }
+
+  .party-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .party-card {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: start;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: rgba(255, 253, 249, 0.74);
+  }
+
+  .party-mark {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--tone);
+    font-weight: 800;
+  }
+
+  .party-card h3,
+  .party-card p {
+    margin: 0 0 6px;
+  }
+
+  .party-card strong {
+    color: var(--page-accent);
+    white-space: nowrap;
+  }
+
+  .family {
+    font-weight: 700;
+  }
+
+  .tone-red { --tone: #d97968; }
+  .tone-blue { --tone: #7ea6bd; }
+  .tone-green { --tone: #97ad7b; }
+  .tone-yellow { --tone: #d9b95e; }
+  .tone-neutral { --tone: #d7cbbb; }
+
+  .issue-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .issue-grid article,
+  .article-card {
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: rgba(255, 253, 249, 0.74);
+  }
+
+  .issue-grid h3,
+  .issue-grid p {
+    margin: 0 0 8px;
+  }
+
+  .article-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .article-card {
+    display: grid;
+    gap: 10px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .article-card span,
+  .article-card em {
+    color: var(--page-accent);
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  .article-card h3,
+  .article-card p {
+    margin: 0;
+  }
+
+  .source-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .source-list a {
+    padding: 10px 13px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--page-accent);
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  @media (max-width: 980px) {
+    .election-hero,
+    .section-grid,
+    .section-head,
+    .party-grid,
+    .issue-grid,
+    .article-grid {
+      grid-template-columns: 1fr;
+    }
+
+    h1 {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .hero-copy,
+    .date-panel {
+      padding: 24px;
+      border-radius: 22px;
+    }
+
+    .party-card {
+      grid-template-columns: 48px minmax(0, 1fr);
+    }
+
+    .party-card strong {
+      grid-column: 2;
+    }
+  }
+</style>

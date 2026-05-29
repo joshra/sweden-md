@@ -3,6 +3,7 @@ import Layout from "../../../layouts/Layout.astro";
 import { getArticle, getArticlesByCategory, getDynamicCategories } from "../../../utils/content";
 import { getCategoryConfig } from "../../../utils/categoryConfig";
 import { getCityPhotos } from "../../../utils/cityPhotos";
+import ArticleVisualCards from "../../../components/ArticleVisualCards.astro";
 
 export async function getStaticPaths() {
   return getDynamicCategories("en").flatMap((category) =>
@@ -81,6 +82,7 @@ const cityPhotos = category === "cities" ? getCityPhotos(article.title) : [];
             </div>
           </section>
         )}
+        <ArticleVisualCards slug={article.slug} locale="en" />
         <div set:html={article.html} />
       </div>
     </article>

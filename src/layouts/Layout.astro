@@ -11,7 +11,7 @@ interface Props {
   description?: string;
   lang?: string;
   navItems?: NavItem[];
-  pageType?: "default" | "home" | "category" | "article" | "map" | "resources" | "graph";
+  pageType?: "default" | "home" | "category" | "article" | "map" | "resources" | "graph" | "election";
   accent?: string;
   accentSoft?: string;
 }
@@ -34,6 +34,7 @@ const baseNav = isEnglish
       { href: "/en/#trending", label: "Trending" },
       { href: "/en/#featured", label: "Featured" },
       { href: "/en/#latest", label: "Latest" },
+      { href: "/en/election-2026", label: "2026 Election" },
       { href: "/en/graph", label: "Graph" }
     ]
   : [
@@ -42,6 +43,7 @@ const baseNav = isEnglish
       { href: "/#trending", label: "熱門" },
       { href: "/#featured", label: "精選" },
       { href: "/#latest", label: "最新" },
+      { href: "/election-2026", label: "2026 大選" },
       { href: "/graph", label: "圖譜" }
     ];
 const activeNav = navItems || baseNav;
@@ -192,6 +194,13 @@ function isNavActive(href: string) {
           radial-gradient(circle at top, rgba(88, 140, 185, 0.24), transparent 26%),
           radial-gradient(circle at 85% 12%, rgba(141, 195, 175, 0.16), transparent 18%),
           linear-gradient(180deg, #091217 0%, #0f1a1f 48%, #132129 100%);
+      }
+
+      body.page-election {
+        --page-accent: #6d5b8a;
+        --page-accent-soft: rgba(109, 91, 138, 0.14);
+        background:
+          linear-gradient(160deg, rgba(104, 120, 148, 0.2) 0%, #f3ede2 30%, #faf7f1 100%);
       }
 
       :global(a) {

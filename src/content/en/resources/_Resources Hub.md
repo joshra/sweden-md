@@ -21,7 +21,7 @@ Think of it in two layers: official entry points for institutions and governance
 
 ## Contemporary significance
 
-In an AI-assisted writing environment, source governance becomes part of editorial quality. The resources section makes that governance visible.
+Source governance is part of editorial quality. The resources section makes that standard visible to readers.
 
 ## Related topics
 
@@ -31,7 +31,7 @@ In an AI-assisted writing environment, source governance becomes part of editori
 
 ## References
 
-- `EDITORIAL.md`
-- `AGENTS.md`
-- `README.md`
-
+- `AGENTS.md` - baseline source expectations for factual Sweden.md articles
+- `EDITORIAL.md` - formal standard for sourcing, verification, and article structure
+- [government.se](https://www.government.se/) - official entry point for Swedish government and agencies
+- [scb.se](https://www.scb.se/en/) - official entry point for Swedish statistics

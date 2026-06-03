@@ -9,7 +9,7 @@ description: Sweden.md exists to make country knowledge more structured, readabl
 
 ## Why it matters
 
-The challenge today is rarely the absence of information. The challenge is the absence of form. People can find fragments about Sweden everywhere, but those fragments often fail to become a coherent picture. That problem becomes even more important in an AI context, where structure, framing, and citation quality shape what can be learned from a corpus.
+The challenge today is rarely the absence of information. The challenge is the absence of form. People can find fragments about Sweden everywhere, but those fragments often fail to become a coherent picture. Sweden.md exists because structure, framing, and source quality decide whether scattered facts can become understanding.
 
 ## Background
 
@@ -17,11 +17,11 @@ Sweden is often reduced to a small cluster of internationally legible ideas: wel
 
 ## What this project is trying to solve
 
-Sweden.md is trying to solve three problems at once: disconnected topics, weak editorial framing, and the drift between readable prose and reliable reference. That is why the project uses `knowledge/` as a single source of truth and formalises its writing rules instead of leaving quality to individual intuition.
+Sweden.md is trying to solve three problems at once: disconnected topics, weak editorial framing, and the drift between readable prose and reliable reference. The site therefore treats consistency, sourcing, and narrative point of view as part of the reader experience, not as backstage concerns.
 
 ## Contemporary significance
 
-If Sweden.md works, it will demonstrate a reusable way to write country knowledge: curated without becoming propagandistic, readable without becoming shallow, and structured enough for both humans and AI systems.
+If Sweden.md works, it will demonstrate a reusable way to write country knowledge: curated without becoming propagandistic, readable without becoming shallow, and structured enough to keep growing over time.
 
 ## Related topics
 
@@ -30,7 +30,6 @@ If Sweden.md works, it will demonstrate a reusable way to write country knowledg
 
 ## References
 
-- `README.md`
-- `EDITORIAL.md`
-- `AGENTS.md`
-
+- `README.md` - project rationale and public positioning
+- `EDITORIAL.md` - formal guidance on curated country writing, sourcing, and audience
+- `AGENTS.md` - narrative position, bilingual parity, and completion rules

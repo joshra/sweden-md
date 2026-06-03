@@ -21,15 +21,11 @@ Very short stubs, unsourced factual claims, generic country summaries, and piece
 
 ## Three-layer depth
 
-Following the strongest pattern in `taiwan-md`, Sweden.md expects each article to support at least three reading modes: a quick overview, a five-minute understanding layer, and deeper follow-up through references or linked topics.
+Sweden.md expects each article to support at least three reading modes: a quick overview, a five-minute understanding layer, and deeper follow-up through references or linked topics.
 
 ## Sources and verification
 
 Whenever an article contains statistics, dates, policy claims, company information, or contested issues, it must include sources. Reliable knowledge is not just a moral preference here; it is part of the structure of the project.
-
-## Practical use
-
-For the full rule set, see `EDITORIAL.md`. For actual drafting, use `About/文章模板.md`. For future automated writing work, follow `AGENTS.md`.
 
 ## Related topics
 
@@ -38,7 +34,6 @@ For the full rule set, see `EDITORIAL.md`. For actual drafting, use `About/文�
 
 ## References
 
-- `EDITORIAL.md`
-- `AGENTS.md`
-- `README.md`
-
+- `AGENTS.md` - structure requirements, narrative position, source rules, and completion checks
+- `EDITORIAL.md` - formal statement of curation, layered depth, and quality thresholds
+- `docs/article-template.md` - drafting structure for finished Sweden.md articles

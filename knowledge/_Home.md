@@ -1,11 +1,11 @@
 ---
 title: Sweden.md
-description: 一個用策展式知識架構，向台灣讀者介紹瑞典的 Markdown-first 主題庫。
+description: 一個用策展式知識架構，向台灣讀者介紹瑞典的主題網站。
 ---
 
 # Sweden.md
 
-> **30 秒概覽：** Sweden.md 不是旅遊網站，也不是零散百科。它是一個以 Markdown 為核心、以知識策展為導向的瑞典主題庫，試著用一個住在台灣的瑞典人能說清楚的方式，把瑞典介紹給台灣。
+> **30 秒概覽：** Sweden.md 不是旅遊網站，也不是零散百科。它是一個以知識策展為導向的瑞典主題網站，試著用一個住在台灣的瑞典人能說清楚的方式，把瑞典介紹給台灣。
 
 ## 為什麼重要
 
@@ -15,7 +15,7 @@ description: 一個用策展式知識架構，向台灣讀者介紹瑞典的 Mar
 
 ## 這個專案怎麼讀
 
-最好的讀法，是先從各分類 Hub 進入，掌握整體地圖，再往下讀單一主題。每篇文章都應該回答一個清楚問題，例如某個制度為什麼重要、某種文化實踐如何形成、某段歷史如何影響當代瑞典。文章之間再透過 `[[wikilink]]` 彼此連接，形成網絡。
+最好的讀法，是先從各分類 Hub 進入，掌握整體地圖，再往下讀單一主題。每篇文章都應該回答一個清楚問題，例如某個制度為什麼重要、某種文化實踐如何形成、某段歷史如何影響當代瑞典。文章之間彼此連接，讓讀者可以從一個主題自然走向下一個主題。
 
 如果你想先理解方法，可以先看 About 區；如果想先理解瑞典本身，可以從 `History`、`Society`、`Culture` 進入，再延伸到 `Cities`、`Food`、`Nature`、`Technology`。
 
@@ -28,10 +28,10 @@ description: 一個用策展式知識架構，向台灣讀者介紹瑞典的 Mar
 ## 相關主題
 
 - [[About/編輯原則]]
-- [[About/文章模板]]
 - [[Resources/研究與統計資源]]
 
 ## 參考資料
 
-- [taiwan-md](https://github.com/frank890417/taiwan-md)
-- [Astro Content Collections](https://docs.astro.build/en/guides/content-collections/)
+- `README.md` — 專案定位、分類入口與閱讀方式的總覽
+- `AGENTS.md` — Sweden.md 的內容任務、敘事位置與品質要求
+- `EDITORIAL.md` — 網站作為策展式知識庫的正式編輯方針
